@@ -49,21 +49,21 @@ export default function VideoDetailPage({ params }) {
 
   return (
     <section className='video-background pt-14'>
-      <div className="container mx-auto ">
-        <div className="flex flex-col md:flex-row ">
-          <div className="md:w-1/2 mb-6 md:mb-0 video-container">
-            <VideoPlayer videoUrl={video.videoUrl} />
-          </div>
-          <div className="md:w-1/2 md:pl-6 markdown-body description-scrollable">
-            <h1 className="text-4xl font-bold mb-5 text-green max-w-fit">
-              <TypingEffect text={video.title} speed={100} />
-            </h1>
-            <h4>Description</h4>
-            <MarkdownContent description={video.description} />
-          </div>
-        </div>
+  <div className="container mx-auto">
+    <div className="flex flex-col md:flex-row">
+      <div className="md:w-1/2 mb-6 md:mb-0 video-container">
+        <VideoPlayer videoUrl={video.videoUrl} />
       </div>
-    </section>
+      <div className="md:w-1/2 md:pl-6 markdown-body description-scrollable">
+        <h1 className="text-4xl font-bold mb-5 text-green max-w-fit">
+          <TypingEffect text={video.title} speed={100} />
+        </h1>
+        <h4>Description</h4>
+        <MarkdownContent description={video.description} />
+      </div>
+    </div>
+  </div>
+</section>
   );
 }
 

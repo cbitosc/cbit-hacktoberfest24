@@ -71,7 +71,7 @@ export default function Timeline() {
 						<TimelineItem
 							date="30th September 2024"
 							title="Preptember Begins"
-							content="Preptember, like the name suggests, is a preparation month for HacktoberFest. It is a great way to delve into open source and prep for the upcoming hackathon. The first video explores the first phase of a hackathon."
+							content="Preptember, like the name suggests, is a preparation month for Hacktoberfest. It is a great way to delve into open source and prep for the upcoming hackathon. The first video explores the first phase of a hackathon."
 							link="/preptember"
 							icon={<FaLightbulb fontSize={12} />}
 							multiplier={1}

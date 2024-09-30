@@ -19,7 +19,7 @@ const geistMono = localFont({
 });
 
 export const metadata = {
-	title: "HacktoberFest 2024 - CBIT Open Source Community",
+	title: "Hacktoberfest 2024 - CBIT Open Source Community",
 	description:
 		"Dive into the world of open source with CBIT Open Source Community",
 	icons: {

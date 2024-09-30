@@ -119,7 +119,7 @@ export default function Footer() {
 							target="_blank"
 							className="text-beige/60 border-b-2 border-beige/70 transition-colors text-base hover:text-beige"
 						>
-							HacktoberFest ↗
+							Hacktoberfest ↗
 						</Link>
 						<Link
 							href="https://cbitosc.github.io/"
