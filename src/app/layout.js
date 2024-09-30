@@ -52,13 +52,11 @@ export default function RootLayout({ children }) {
 					"min-h-screen md:grid md:grid-rows-[auto,1fr,auto]"
 				)}
 			>
-				<WindowSizeProvider>
-					<SimulatedDarkModeProvider>
-						<Navbar />
-						{children}
-						<Footer />
-					</SimulatedDarkModeProvider>
-				</WindowSizeProvider>
+				<SimulatedDarkModeProvider>
+					<Navbar />
+					{children}
+					<Footer />
+				</SimulatedDarkModeProvider>
 			</body>
 		</html>
 	);

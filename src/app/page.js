@@ -5,7 +5,6 @@ import dynamic from "next/dynamic";
 import RootLayoutClient from "@/components/RootLayoutClient";
 import HeroMod from "./HeroMod";
 import TimelineOld from "./TimelineOld";
-import Timeline from "@/components/Timeline";
 import Mentors from "@/components/mentors";
 import ContactUs from "@/components/contactUs";
 import Preptember from "@/components/preptember";

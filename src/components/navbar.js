@@ -74,11 +74,11 @@ const Navbar = () => {
 	}, [pathname]);
 
 	const navItems = [
-		{ href: "/#about", label: "About" },
-		{ href: "/#preptember", label: "Preptember" },
-		{ href: "/#mentors", label: "Mentors" },
-		{ href: "/#timeline", label: "Timeline" },
-		{ href: "/#contact", label: "Contact Us" },
+		{ href: "#about", label: "About" },
+		{ href: "#preptember", label: "Preptember" },
+		{ href: "#mentors", label: "Mentors" },
+		{ href: "#timeline", label: "Timeline" },
+		{ href: "#contact", label: "Contact Us" },
 	];
 
 	return (
@@ -153,7 +153,9 @@ const Navbar = () => {
 					{navItems.map((item) => (
 						<Link
 							key={item.href}
-							href={item.href}
+							href={
+								pathname === "/" ? item.href : `/${item.href}`
+							}
 							className={cn(
 								navTransparent
 									? "text-beige hover:text-green"
@@ -173,7 +175,7 @@ const Navbar = () => {
 				</div>
 				<div className="hidden lg:flex lg:flex-1 lg:justify-end">
 					<Link
-						href="/#timer"
+						href={pathname === "/" ? "#timer" : "/#timer"}
 						className={cn(
 							"text-sm font-semibold leading-6",
 							"text-darkgreen px-4 py-2 rounded-lg",
@@ -242,7 +244,11 @@ const Navbar = () => {
 								{navItems.map((item) => (
 									<Link
 										key={item.href}
-										href={item.href}
+										href={
+											pathname === "/"
+												? item.href
+												: `/${item.href}`
+										}
 										className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
 										onClick={() => setMenuOpen(false)}
 									>
@@ -252,7 +258,9 @@ const Navbar = () => {
 							</div>
 							<div className="py-6">
 								<Link
-									href="/#timer"
+									href={
+										pathname === "/" ? "#timer" : "/#timer"
+									}
 									className={cn(
 										"-mx-3 block rounded-lg px-3 py-2.5",
 										"text-base font-semibold leading-7",

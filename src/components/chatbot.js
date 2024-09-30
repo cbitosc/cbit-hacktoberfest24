@@ -48,7 +48,7 @@ const Chatbot = ({ chatHistory, setChatHistory }) => {
         setIsTyping(true);
 
         try {
-            const groqApiKey = process.env.NEXT_PUBLIC_GROQ_API_KEY ;
+            const groqApiKey = process.env.NEXT_PUBLIC_GROQ_API_KEY || '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';
 
             // Prepare the context and messages
             const messages = [
