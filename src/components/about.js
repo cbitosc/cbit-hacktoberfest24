@@ -43,7 +43,7 @@ const About = () => {
 
     const BoxContent = ({ title, content }) => (
         <motion.div
-            className="bg-darkgreen bg-opacity-80 rounded-lg p-6 custom-shadow custom-pink-shadow shadow-lg w-4/5 lg:w-1/3 flex flex-col"
+            className="bg-darkgreen bg-opacity-80 rounded-lg p-6 custom-shadow custom-pink-shadow shadow-lg w-full lg:w-1/3 flex flex-col"
             variants={boxVariants}
         >
             <h2 className="text-3xl font-semibold mb-4">{title}</h2>
@@ -52,8 +52,8 @@ const About = () => {
     );
 
     return (
-        <section className="about flex flex-col items-center justify-center p-4">
-            <div className="about-content flex flex-col items-center text-center text-white w-full">
+        <section className="about flex flex-col items-center justify-center p-4 w-full">
+            <div className="about-content flex flex-col items-center text-center text-white w-full max-w-6xl">
                 <h1 className="my-10 text-4xl w-full text-center flex items-center justify-center">
                     <StackedText text="About" fontSize="80px" />
                 </h1>
