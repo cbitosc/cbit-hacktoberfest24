@@ -113,7 +113,7 @@ const ScrollingHeroSection = () => {
 							<span className="text-green">
 								Hacktoberfest 2024
 							</span>
-							. Whether you are a hackathon veteren or a first
+							. Whether you are a hackathon veteran or a first
 							time participant, we will introduce you to the basic
 							technologies you'll need, so you're fully prepared
 							to participate!

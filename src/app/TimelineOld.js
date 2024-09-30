@@ -34,7 +34,7 @@ export default function Timeline() {
 	const timelineProgress = useTransform(
 		scrollYProgress,
 		[0, 1],
-		[0.1, 0.93],
+		[0.1, 0.92],
 		{ clamp: true }
 	);
 
@@ -69,15 +69,15 @@ export default function Timeline() {
 						></motion.div>
 						<div></div>
 						<TimelineItem
-							date="27 September 2024"
+							date="30th September 2024"
 							title="Preptember Begins"
-							content="Preptember is an event before Hacktoberfest. Preptember, like the name suggests, is a preparation month for HacktoberFest. It is a great way to delve into open source and prep for the upcoming hackathon. The first video explores the first phase of a hackathon."
+							content="Preptember, like the name suggests, is a preparation month for HacktoberFest. It is a great way to delve into open source and prep for the upcoming hackathon. The first video explores the first phase of a hackathon."
 							link="/preptember"
 							icon={<FaLightbulb fontSize={12} />}
 							multiplier={1}
 						/>
 						<TimelineItem
-							date="29th September 2024"
+							date="2nd October 2024"
 							title="Preptember Video 2"
 							content="As we delve further into the preptember series, we go in depth into the tech stacks for frontend development."
 							icon={<BiSolidParty fontSize={12} />}
@@ -86,7 +86,7 @@ export default function Timeline() {
 						<div></div>
 						<div></div>
 						<TimelineItem
-							date="2nd October 2024"
+							date="4th October 2024"
 							title="Preptember Video 3"
 							content="Moving on, we will understand the backend and integration concepts."
 							icon={<GoMultiSelect fontSize={12} />}
