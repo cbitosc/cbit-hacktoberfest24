@@ -1,0 +1,67 @@
+.about {
+    /* background-image: url('../assets/about-green-reduced.svg'); Ensure the path is correct */
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    min-height: 100vh;
+    position: relative;
+    padding: 4rem; /* Increased padding to push text down */
+    text-align: center;
+    color: #170101;
+}
+
+.about-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    height: 100%; /* Ensure it takes full height */
+}
+
+.about-logo {
+    width: 250px; /* Adjust the size as needed */
+    height: auto;
+    margin-bottom: 1rem;
+}
+
+.about-heading {
+    color: darkgreen;
+    background: linear-gradient(90deg, darkgreen, rgb(235, 9, 235), darkgreen);
+    background-size: 200% 100%;
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    animation: glowing 2.5s infinite linear;
+    font-size: 3rem; /* Adjust the size as needed */
+}
+
+.about-paragraph {
+    font-size: 1.5rem;
+    color: #170101; /* Light gray color for the paragraph text */
+    max-width: 800px; /* Adjust the max-width as needed */
+    margin: 0 auto;
+}
+
+@keyframes glowing {
+    0% {
+        background-position: -200% 0;
+    }
+    100% {
+        background-position: 200% 0;
+    }
+}
+
+@media (max-width: 768px) {
+    .about-logo {
+        width: 150px;
+    }
+
+    .about-heading {
+        font-size: 1rem; 
+    }
+
+    .about-paragraph {
+        font-size: 0.5rem; /* Adjust the size for smaller screens */
+    }
+}

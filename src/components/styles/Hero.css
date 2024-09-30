@@ -1,0 +1,93 @@
+.hero {
+  background-image: url('/assets/bg.png');
+  background-position: center;
+  background-repeat: no-repeat;
+  height: 100vh;
+  position: relative;
+}
+
+.hero-content {
+  display: flex;
+  align-items: center;
+  margin-top: -300px;
+  overflow: visible; 
+}
+
+.hero-logo {
+  width: 380px; 
+  height: auto; 
+  margin-right: 3px;
+  padding: 40px 40px; 
+}
+
+.glowing-heading {
+  color: darkgreen;
+  background: linear-gradient(90deg, darkgreen, rgb(235, 9, 235), darkgreen);
+  background-size: 200% 100%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  animation: glowing 2.5s infinite linear;
+  font-size: 6rem; 
+}
+
+.glowing-heading-2 {
+    color: darkgreen;
+    background: linear-gradient(90deg, darkgreen, rgb(9, 235, 43), darkgreen);
+    background-size: 200% 100%;
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    animation: glowing 2.5s infinite linear;
+    font-size: 2.5rem; 
+  }
+  
+  .event-info button {
+    background-color: darkgreen; 
+    color: white; 
+    border: none; 
+    padding: 0.75rem 1.5rem; 
+    font-size: 1rem; 
+    cursor: pointer; 
+    border-radius: 10px;
+    transition: background-color 0.6s ease; 
+  }
+  
+  .event-info button:hover {
+    background-color: lightgreen;
+    color: darkgreen;
+  }
+
+@keyframes glowing {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .hero-logo {
+    width: 150px; 
+  }
+
+  .glowing-heading {
+    font-size: 3rem; 
+  }
+
+  .hero-content {
+    margin-top: -100px; 
+  }
+
+  .event-info p {
+    font-size: 1.2rem; 
+  }
+
+  .event-info button {
+    padding: 0.5rem 1rem; 
+    font-size: 0.9rem; 
+  }
+}
+
+  

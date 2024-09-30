@@ -1,0 +1,120 @@
+.timeline-background {
+	background-image: url(../components/assets/ooorganize.svg);
+}
+
+::-webkit-scrollbar {
+	width: 4px;
+}
+::-webkit-scrollbar-thumb {
+	background-color: #50da4c;
+	border-radius: 2px;
+}
+::-webkit-scrollbar-track {
+	background-color: #f3f4f6;
+}
+::-webkit-scrollbar-thumb:hover {
+	background-color: #183717;
+}
+
+#timeline ol li {
+	margin: 0 !important;
+	padding: 1rem !important;
+	grid-column: span 1;
+	position: relative;
+}
+
+#timeline ol li > div.my-auto {
+	background-color: #183717;
+	border-radius: 1rem;
+	padding: 1rem;
+}
+
+#timeline ol li > div.my-auto::before {
+	content: "";
+	position: absolute;
+	top: 2.3rem;
+	left: 0;
+	width: 0;
+	height: 0;
+	border: 10px solid transparent;
+	border-right-color: #183717;
+	z-index: -1;
+	transform: translateY(-50%);
+}
+
+@media (min-width: 1024px) {
+	::-webkit-scrollbar {
+		width: 8px;
+	}
+	::-webkit-scrollbar-thumb {
+		background-color: #50da4c;
+		border-radius: 4px;
+	}
+	::-webkit-scrollbar-track {
+		background-color: #f3f4f6;
+	}
+	::-webkit-scrollbar-thumb:hover {
+		background-color: #183717;
+	}
+
+	#timeline ol > div#progress {
+		position: absolute;
+		left: 50%;
+		top: 0;
+		width: 5px;
+		height: 100%;
+		transform-origin: 0 0;
+		background: #50da4c;
+		transform: translateX(-50%);
+	}
+
+	#timeline ol li {
+		margin: 0 !important;
+		padding: 1rem !important;
+		grid-column: span 1;
+		position: relative;
+	}
+
+	#timeline ol li:nth-of-type(even) {
+		border: none;
+		text-align: right;
+		margin-left: -1px;
+		justify-self: end;
+	}
+
+	#timeline ol li:nth-of-type(even) > div:nth-of-type(1) {
+		position: absolute;
+		left: 100%;
+		transform: translateX(-50%);
+	}
+
+	#timeline ol li > div.my-auto {
+		background-color: #183717;
+		border-radius: 1rem;
+		padding: 1rem;
+	}
+
+	#timeline ol li:nth-of-type(odd) > div.my-auto::before {
+		content: "";
+		position: absolute;
+		top: 2.3rem;
+		left: 0;
+		width: 0;
+		height: 0;
+		border: 10px solid transparent;
+		border-right-color: #183717;
+		transform: translateY(-50%);
+	}
+
+	#timeline ol li:nth-of-type(even) > div.my-auto::before {
+		content: "";
+		position: absolute;
+		top: 2.3rem;
+		left: 100%;
+		width: 0;
+		height: 0;
+		border: 10px solid transparent;
+		border-left-color: #183717;
+		transform: translateY(-50%) translateX(-100%);
+	}
+}

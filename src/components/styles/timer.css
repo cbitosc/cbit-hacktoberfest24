@@ -1,0 +1,14 @@
+.bg-repeaat{
+    background-image: url(../../app/preptember/assets/repeat-background.png);
+    background-size: 200px;
+    animation: scroll-left 10s linear infinite;
+}
+
+@keyframes scroll-left {
+    from {
+      background-position: 0;
+    }
+    to {
+      background-position: -200px;
+    }
+  }

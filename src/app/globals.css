@@ -1,0 +1,140 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+	forced-color-adjust: none;
+	color-scheme: light;
+}
+
+:root {
+	/* https://developer.chrome.com/blog/auto-dark-theme/#detecting-auto-dark-theme */
+	color-scheme: only light;
+	--background: #ffffff;
+	--foreground: #171717;
+}
+
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+	scroll-padding-top: 70px;
+	scroll-behavior: smooth;
+}
+
+@media (prefers-color-scheme: dark) {
+	:root {
+		--background: #0a0a0a;
+		--foreground: #ededed;
+	}
+}
+
+body {
+	color: var(--foreground);
+	background: var(--background);
+	font-family: var(--font-sg);
+}
+
+@layer utilities {
+	.text-balance {
+		text-wrap: balance;
+	}
+}
+
+::selection {
+	background-color: #b4ff38;
+	color: #000000;
+}
+
+.blinking-underscore {
+	animation: blink 1s steps(1) infinite;
+}
+
+@keyframes blink {
+	0%,
+	49.99% {
+		visibility: visible;
+	}
+	50%,
+	100% {
+		visibility: hidden;
+	}
+}
+
+.chatbot-button {
+	position: fixed;
+	bottom: 20px;
+	right: 20px;
+	background: linear-gradient(135deg, #c401c4 0%, #1c8818 100%);
+	color: #fefdf8;
+	border: none;
+	border-radius: 30px;
+	padding: 10px 18px;
+	font-size: 24px;
+	cursor: pointer;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+	z-index: 1000;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background-size: 100% 100%;
+	background-position: 0% 50%;
+	transition: background-position 0.3s ease;
+}
+
+.chatbot-button:hover {
+	background-position: 100% 50%;
+}
+
+.chatbot-popup {
+	position: fixed;
+	bottom: 140px;
+	right: 20px;
+	width: 300px;
+	height: 500px;
+	background-color: #fefdf8;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+	border-radius: 10px;
+	padding: 10px;
+	display: flex;
+	flex-direction: column;
+	z-index: 999;
+}
+
+.chatbot-popup h3 {
+	margin: 0;
+	padding-bottom: 10px;
+	font-size: 20px;
+	color: #1c1c1c;
+}
+
+.chatbot-popup p {
+	margin: 0;
+	font-size: 14px;
+	color: #666;
+}
+
+.close-button {
+	background: none;
+	border: none;
+	font-size: 20px;
+	color: #c401c4;
+	cursor: pointer;
+	align-self: flex-end;
+}
+
+.close-button:hover {
+	color: #ff8bff;
+}
+
+.dg-green-sv-bg {
+	background-image: url(../app/preptember/assets/repeat-background.png);
+	background-size: 200px;
+	animation: scroll-left 10s linear infinite;
+}
+
+@media only screen and (max-width: 768px) {
+	.chatbot-popup {
+		bottom: 100px;
+	}
+}

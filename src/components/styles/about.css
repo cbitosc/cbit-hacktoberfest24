@@ -1,0 +1,39 @@
+/* .about {
+    background-image: url(../assets/ffflurry.svg);
+
+} */
+
+.about {
+    background-color: #50da4c;
+}
+
+.contact-bg{
+    background-image: url(../assets/ffflurry.svg);
+ 
+}
+
+
+
+@keyframes glowing {
+    0% {
+        background-position: -200% 0;
+    }
+    100% {
+        background-position: 200% 0;
+    }
+}
+
+
+@media (max-width: 768px) {
+    .about-heading {
+        font-size: 1rem; 
+    }
+
+    .about-paragraph {
+        font-size: 0.5rem; 
+    }
+}
+
+.custom-pink-shadow {
+    box-shadow: 2px 2px 0px 2px rgba(255, 139, 255, 0.8); 
+}

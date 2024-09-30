@@ -1,0 +1,212 @@
+
+
+.wrapper {
+  background-image: url(../assets/Gold\ COSC\ \(4\).svg);
+  background-repeat: no-repeat;
+  background-size: contain;
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  width: 100%;
+  max-width: 1500px;
+}
+
+.row {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  height: 300px;
+  align-items: center;
+}
+
+.card {
+  flex: 1;
+  height: 250px;
+  border-radius: 20px;
+  background-size: cover;
+  background-position: center;
+  cursor: pointer;
+  overflow: hidden;
+  position: relative;
+  transition: all 0.6s cubic-bezier(.28,-0.03,0,.99);
+  box-shadow: 0px 10px 30px -5px rgba(0,0,0,0.8);
+  max-width: 200px;
+  border: 1px solid #50DA4C;
+}
+
+.card-up {
+  transform: translateY(-20px);
+}
+
+.card-down {
+  transform: translateY(20px);
+}
+
+.row:hover .card {
+  flex: 0.8;
+}
+
+.card:hover {
+  flex: 1.2 !important;
+  transform: translateY(0) scale(1.05);
+  z-index: 1;
+  max-width: 240px;
+}
+
+.card-content {
+  display: flex;
+  align-items: flex-end;
+  position: absolute;
+  bottom: 0 ;
+  left: 0;
+  right: 0;
+  padding: 15px;
+  width: 100% !important;
+  height: 100% !important;
+  background: linear-gradient(to top, #183717, transparent);
+  color: white;
+  transform: translateY(100%);
+  transition: transform 0.3s ease;
+}
+
+.card:hover .card-content {
+  transform: translateY(0);
+}
+
+.icon {
+  background: #223;
+  color: white;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.2em;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.description h4 {
+  text-transform: uppercase;
+  margin-bottom: 5px;
+  font-size: 2rem;
+}
+
+.description p {
+  color: #C401C4 !important;
+  font-size: 1.4em;
+  margin-bottom: 5px;
+}
+
+.social-links {
+  display: flex;
+  gap: 10px;
+}
+
+.social-links a {
+  font-size: 2em;
+  color: #50DA4C;
+  transition: color 0.3s ease;
+}
+
+.social-links a:hover {
+  color: #C401C4;
+}
+
+#sai-kiran{
+  background-image: url(../../app/mentor-images/SaiKiran.png);
+}
+
+#ritesh{
+  background-image: url(../../app/mentor-images/Ritesh.jpg);
+}
+
+#akil{
+  background-image: url(../../app/mentor-images/Akil-2.jpeg);
+}
+
+#koushik{
+  background-image: url(../../app/mentor-images/Kousik.jpg);
+}
+
+#adhit{
+  background-image: url(../../app/mentor-images/Adhit.JPG);
+}
+
+#guru{
+  background-image: url(../../app/mentor-images/Guru.jpg);
+}
+
+#harshith{
+  background-image: url(../../app/mentor-images/Harshith.jpeg);
+}
+
+#mahathi{
+  background-image: url(../../app/mentor-images/Mahathi.png);
+}
+
+#nithin{
+  background-image: url(../../app/mentor-images/Nithin.jpeg);
+}
+
+#sameekruth{
+  background-image: url(../../app/mentor-images/Sameekruth.png);
+}
+
+
+@media (max-width: 768px) {
+  .row {
+    flex-direction: column;
+    min-height: 3500px;
+    gap: 40px;
+  }
+
+  .card {
+    width: 100%;
+    max-width: none;
+
+    transform: none !important;
+  }
+
+  .card-content {
+    transform: translateY(0);
+  }
+
+  .row:hover .card {
+    flex: 1;
+  }
+
+  .card:hover {
+    flex: 1 !important;
+    transform: none !important;
+    max-width: none;
+  }
+}
+
+@media (max-width: 480px) {
+
+  .row{
+    min-height: 1900px;
+  }
+  .card {
+    height: 250px;
+  }
+
+  .icon {
+    width: 30px;
+    height: 30px;
+    font-size: 1em;
+  }
+
+
+}
