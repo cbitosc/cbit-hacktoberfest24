@@ -26,13 +26,13 @@ export const metadata = {
 		icon: [
 			{
 				media: "(prefers-color-scheme: light)",
-				url: "./fav-cosc.ico",
-				href: "./fav-cosc.ico",
+				url: "./Lightmode.ico",
+				href: "./Lightmode.ico",
 			},
 			{
 				media: "(prefers-color-scheme: dark)",
-				url: "./fav-cosc.ico",
-				href: "./fav-cosc.ico",
+				url: "./DarkMode.ico",
+				href: "./DarkMode.ico",
 			},
 		],
 	},
