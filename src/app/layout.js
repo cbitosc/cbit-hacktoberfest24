@@ -1,11 +1,10 @@
-// This layout handles server-side logic like metadata
 import localFont from "next/font/local";
 import "./globals.css";
 import Navbar from "@/components/navbar";
 import Footer from "@/components/footer";
 import cn from "@/utils/cn";
 import { SimulatedDarkModeProvider } from "@/utils/contexts/SimulatedDarkModeDetection";
-import { WindowSizeProvider } from "@/utils/contexts/WindowSize";
+import Script from 'next/script';
 
 const sg = localFont({
 	src: "./fonts/sg.woff2",
@@ -43,8 +42,31 @@ export const metadata = {
 };
 
 export default function RootLayout({ children }) {
+	const GA_TRACKING_ID = process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID;
+
 	return (
 		<html lang="en">
+			<head>
+				{/* Google Analytics */}
+				{GA_TRACKING_ID && (
+					<>
+						<Script
+							src={`https://www.googletagmanager.com/gtag/js?id=${GA_TRACKING_ID}`}
+							strategy="afterInteractive"
+						/>
+						<Script id="google-analytics" strategy="afterInteractive">
+							{`
+								window.dataLayer = window.dataLayer || [];
+								function gtag(){dataLayer.push(arguments);}
+								gtag('js', new Date());
+								gtag('config', '${GA_TRACKING_ID}', {
+									page_path: window.location.pathname,
+								});
+							`}
+						</Script>
+					</>
+				)}
+			</head>
 			<body
 				className={cn(
 					`${sg.variable} ${geistMono.variable}`,
