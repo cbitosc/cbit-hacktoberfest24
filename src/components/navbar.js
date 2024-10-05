@@ -258,7 +258,7 @@ const Navbar = () => {
 							</div>
 							<div className="py-6">
 								<Link
-									href= "/register"
+									href={pathname === "/" ? "#timer" : "/#timer"}
 									className={cn(
 										"-mx-3 block rounded-lg px-3 py-2.5",
 										"text-base font-semibold leading-7",
