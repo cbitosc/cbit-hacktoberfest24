@@ -1,20 +1,18 @@
-'use client';
-
-import dynamic from 'next/dynamic';
-
-const ReactPlayer = dynamic(() => import('react-player'), { ssr: false });
+"use client";
+import ReactPlayer from "react-player";
 
 function VideoPlayer({ videoUrl }) {
-  return (
-    <div className="aspect-w-16 aspect-h-9">
-      <ReactPlayer
-        url={videoUrl}
-        width="100%"
-        height="100%"
-        controls={true}
-      />
-    </div>
-  );
+	return (
+		<div className="xl:min-w-[600px] relative aspect-video sm:max-md:min-h-[300px]">
+			<ReactPlayer
+				playsinline
+				url={videoUrl}
+				width="100%"
+				height="100%"
+				controls={true}
+			/>
+		</div>
+	);
 }
 
 export default VideoPlayer;

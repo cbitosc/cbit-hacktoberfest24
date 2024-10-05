@@ -11,6 +11,7 @@ import { collection, getDocs } from "../firebase";
 import { db } from "../firebase";
 import Link from "next/link";
 import StackedText from "@/components/StackedText";
+import { orderBy, query } from "firebase/firestore";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -25,14 +26,20 @@ const ScrollingHeroSection = () => {
 		const fetchVideos = async () => {
 			setIsLoading(true);
 			try {
-				const querySnapshot = await getDocs(collection(db, "videos"));
+				const querySnapshot = await getDocs(
+					query(
+						collection(db, "videos"),
+						orderBy("releaseDate", "asc")
+					)
+				);
 				const videoList = querySnapshot.docs.map((doc) => ({
 					id: doc.id,
 					...doc.data(),
 				}));
 				setVideos(videoList);
 			} catch (error) {
-				console.error("Error fetching videos: ", error);
+				setIsLoading(false);
+				setVideos([]);
 			} finally {
 				setIsLoading(false);
 			}
@@ -113,7 +120,7 @@ const ScrollingHeroSection = () => {
 							<span className="text-green">
 								Hacktoberfest 2024
 							</span>
-							. Whether you are a hackathon veteran or a first
+							. Whether you are a hackathon veteren or a first
 							time participant, we will introduce you to the basic
 							technologies you'll need, so you're fully prepared
 							to participate!
@@ -128,7 +135,6 @@ const ScrollingHeroSection = () => {
 					<svg
 						className=""
 						width="100%"
-						height="auto"
 						viewBox="0 0 2822 332"
 						fill="none"
 						xmlns="http://www.w3.org/2000/svg"
@@ -150,30 +156,31 @@ const ScrollingHeroSection = () => {
 						<StackedText text="Videos" fontSize="80px" />
 					</h1>
 
-      {isLoading ? (
-  <div className=' h-screen flex flex-col items-center justify-center'>
-  <span class="loader"></span>
-</div>
-) : videos.length === 0 ? (
-  <div className="text-center text-5xl my-40 text-darkgreen font-bold">
-    Coming Soon...
-  </div>
-) : (
-  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 mx-5 lg:mx-0">
-  {videos.map((video) => (
-    <Link href={`/preptember/videos/${video.id}`} key={video.id}>
-      <div className="styled-clipped-card cursor-pointer">
-        <div className="card-contentt relative">
-          
-          <div className="relative">
-            <Image
-              src={video.thumbnailUrl}
-              alt={video.title}
-              width={300}
-              height={200}
-              layout="responsive"
-              className="thumbnail-image"
-            />
+					{isLoading ? (
+						<div className=" h-screen flex flex-col items-center justify-center">
+							<span className="loader"></span>
+						</div>
+					) : videos.length === 0 ? (
+						<div className="text-center text-5xl my-40 text-darkgreen font-bold">
+							Coming Soon...
+						</div>
+					) : (
+						<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 mx-5 lg:mx-0">
+							{videos.map((video, idx) => (
+								<Link
+									href={`/preptember/videos/${video.id}`}
+									key={video.id}
+								>
+									<div className="styled-clipped-card cursor-pointer">
+										<div className="card-contentt relative">
+											<div className="relative max-md:min-w-[200px] xl:min-w-[300px] xl:min-h-[157.5px]">
+												<Image
+													src={video.thumbnailUrl}
+													alt={video.title}
+													width={300}
+													height={157.5}
+													className="thumbnail-image w-full h-full object-cover"
+												/>
 
 												{/* Dark overlay */}
 												<div className="absolute inset-0 bg-darkgreen bg-opacity-50"></div>
@@ -190,6 +197,8 @@ const ScrollingHeroSection = () => {
 													</svg>
 												</div>
 											</div>
+
+											<p>#{idx + 1}</p>
 
 											<h1 className="text-9xl text-background">
 												<span className="text-deeppink">

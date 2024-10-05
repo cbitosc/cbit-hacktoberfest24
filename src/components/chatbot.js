@@ -1,17 +1,16 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from 'react';
-import axios from 'axios';
-import Markdown from 'react-markdown';
+import React, { useState, useEffect, useRef } from "react";
+import axios from "axios";
+import Markdown from "react-markdown";
 import "./styles/chatbot.css";
 
 const Chatbot = ({ chatHistory, setChatHistory }) => {
-    console.log('Chatbot component rendered');
-    const [userMessage, setUserMessage] = useState('');
-    const [isTyping, setIsTyping] = useState(false);
-    const chatWindowRef = useRef(null);
+	const [userMessage, setUserMessage] = useState("");
+	const [isTyping, setIsTyping] = useState(false);
+	const chatWindowRef = useRef(null);
 
-    const hacktoberfestContext = `
+	const hacktoberfestContext = `
         *Answer questions in brief*
         
         You are ASK COSC, a sophisticated and intuitive chatbot meticulously crafted by the talented tech enthusiasts at COSC (Chaitanya Bharathi Institute of Technology Open Source Community). 
@@ -39,116 +38,130 @@ const Chatbot = ({ chatHistory, setChatHistory }) => {
         If you cannot answer a question, ask the participants to contact us through the contact information provided on our website
     `;
 
-    const sendMessage = async () => {
-        if (userMessage.trim() === '' || isTyping) return;
+	const sendMessage = async () => {
+		if (userMessage.trim() === "" || isTyping) return;
 
-        const updatedHistory = [...chatHistory, { sender: 'user', message: userMessage }];
-        setChatHistory(updatedHistory);
-        setUserMessage('');
-        setIsTyping(true);
+		const updatedHistory = [
+			...chatHistory,
+			{ sender: "user", message: userMessage },
+		];
+		setChatHistory(updatedHistory);
+		setUserMessage("");
+		setIsTyping(true);
 
-        try {
-            const groqApiKey = process.env.NEXT_PUBLIC_GROQ_API_KEY || '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';
+		try {
+			const groqApiKey =
+				process.env.NEXT_PUBLIC_GROQ_API_KEY ||
+				"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";
 
-            // Prepare the context and messages
-            const messages = [
-                { role: "system", content: hacktoberfestContext },
-                ...updatedHistory.map(chat => ({
-                    role: chat.sender === 'user' ? 'user' : 'assistant',
-                    content: chat.message
-                }))
-            ];
+			// Prepare the context and messages
+			const messages = [
+				{ role: "system", content: hacktoberfestContext },
+				...updatedHistory.map((chat) => ({
+					role: chat.sender === "user" ? "user" : "assistant",
+					content: chat.message,
+				})),
+			];
 
-            const response = await axios.post(
-                'https://api.groq.com/openai/v1/chat/completions',
-                { 
-                    messages, 
-                    model: 'llama3-8b-8192',
-                    temperature: 0.7,
-                    max_tokens: 150
-                },
-                { 
-                    headers: { 
-                        Authorization: `Bearer ${groqApiKey}`, 
-                        'Content-Type': 'application/json' 
-                    } 
-                }
-            );
+			const response = await axios.post(
+				"https://api.groq.com/openai/v1/chat/completions",
+				{
+					messages,
+					model: "llama3-8b-8192",
+					temperature: 0.7,
+					max_tokens: 150,
+				},
+				{
+					headers: {
+						Authorization: `Bearer ${groqApiKey}`,
+						"Content-Type": "application/json",
+					},
+				}
+			);
 
-            const botMessage = response.data.choices[0].message.content;
-            let currentBotMessage = '';
-            
-            for (let i = 0; i < botMessage.length; i++) {
-                currentBotMessage += botMessage[i];
-                await new Promise(resolve => setTimeout(resolve, 30));
-                setChatHistory(prevChatHistory => {
-                    const lastMessage = prevChatHistory[prevChatHistory.length - 1];
-                    if (lastMessage && lastMessage.sender === 'bot') {
-                        lastMessage.message = currentBotMessage;
-                        return [...prevChatHistory];
-                    } else {
-                        return [...prevChatHistory, { sender: 'bot', message: currentBotMessage }];
-                    }
-                });
-            }
-        } catch (error) {
-            console.error('Error sending message:', error.response || error.message);
-            setChatHistory(prevHistory => [
-                ...prevHistory,
-                { sender: 'bot', message: 'Sorry, something went wrong. Please try again later.' }
-            ]);
-        }
+			const botMessage = response.data.choices[0].message.content;
+			let currentBotMessage = "";
 
-        setIsTyping(false);
-    };
+			for (let i = 0; i < botMessage.length; i++) {
+				currentBotMessage += botMessage[i];
+				await new Promise((resolve) => setTimeout(resolve, 30));
+				setChatHistory((prevChatHistory) => {
+					const lastMessage =
+						prevChatHistory[prevChatHistory.length - 1];
+					if (lastMessage && lastMessage.sender === "bot") {
+						lastMessage.message = currentBotMessage;
+						return [...prevChatHistory];
+					} else {
+						return [
+							...prevChatHistory,
+							{ sender: "bot", message: currentBotMessage },
+						];
+					}
+				});
+			}
+		} catch (error) {
+			setChatHistory((prevHistory) => [
+				...prevHistory,
+				{
+					sender: "bot",
+					message:
+						"Sorry, something went wrong. Please try again later.",
+				},
+			]);
+		}
 
-    const handleKeyDown = (e) => {
-        if (e.key === 'Enter' && !isTyping) {
-            sendMessage();
-        }
-    };
+		setIsTyping(false);
+	};
 
-    useEffect(() => {
-        console.log('Chat history updated:', chatHistory);
-        // Scroll to the bottom of the chat window
-        if (chatWindowRef.current) {
-            chatWindowRef.current.scrollTop = chatWindowRef.current.scrollHeight;
-        }
-    }, [chatHistory]);
+	const handleKeyDown = (e) => {
+		if (e.key === "Enter" && !isTyping) {
+			sendMessage();
+		}
+	};
 
-    return (
-        <div className="chatbot">
-            <div className="chat-window" ref={chatWindowRef}>
-                {chatHistory.map((chat, index) => (
-                    <div key={index} className={`chat-message ${chat.sender}-message`}>
-                        {chat.sender === 'user' ? 'You' : 'Ask COSC'} <Markdown>{chat.message}</Markdown>
-                    </div>
-                ))}
-            </div>
-            <div className="input">
-                <input
-                    type="text"
-                    value={userMessage}
-                    onChange={(e) => {
-                        console.log('User input changed:', e.target.value);
-                        setUserMessage(e.target.value);
-                    }}
-                    onKeyDown={handleKeyDown}
-                    placeholder="Type your message"
-                    disabled={isTyping}
-                />
-                <button 
-                    onClick={() => {
-                        console.log('Send button clicked');
-                        sendMessage();
-                    }} 
-                    disabled={isTyping || userMessage.trim() === ''}
-                >
-                    <i className="ri-send-plane-2-fill"></i>
-                </button>
-            </div>
-        </div>
-    );
+	useEffect(() => {
+		// Scroll to the bottom of the chat window
+		if (chatWindowRef.current) {
+			chatWindowRef.current.scrollTop =
+				chatWindowRef.current.scrollHeight;
+		}
+	}, [chatHistory]);
+
+	return (
+		<div className="chatbot">
+			<div className="chat-window" ref={chatWindowRef}>
+				{chatHistory.map((chat, index) => (
+					<div
+						key={index}
+						className={`chat-message ${chat.sender}-message`}
+					>
+						{chat.sender === "user" ? "You" : "Ask COSC"}:{" "}
+						<Markdown>{chat.message}</Markdown>
+					</div>
+				))}
+			</div>
+			<div className="input">
+				<input
+					type="text"
+					value={userMessage}
+					onChange={(e) => {
+						setUserMessage(e.target.value);
+					}}
+					onKeyDown={handleKeyDown}
+					placeholder="Type your message"
+					disabled={isTyping}
+				/>
+				<button
+					onClick={() => {
+						sendMessage();
+					}}
+					disabled={isTyping || userMessage.trim() === ""}
+				>
+					<i className="ri-send-plane-2-fill"></i>
+				</button>
+			</div>
+		</div>
+	);
 };
 
 export default Chatbot;

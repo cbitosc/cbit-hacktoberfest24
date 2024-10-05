@@ -11,7 +11,7 @@ const Hero = () => {
             PRESENTS
           </h1>
           <p className="text-9xl font-bold glowing-heading">
-            Hacktoberfest 2024!
+            HacktoberFest 2024!
           </p>
           <p className="text-3xl text-lightgreen font-sm glowing-paragraph">
             A month-long celebration of all things open-source

@@ -1,191 +1,228 @@
 .video-background {
-  background-image: url(../../assets/repeat-background.png);
-  background-size: 200px;
-  animation: scroll-left 10s linear infinite;
+	background-image: url(../../assets/repeat-background.png);
+	background-size: 200px;
+	animation: scroll-left 10s linear infinite;
 }
 
 @keyframes scroll-left {
-  from {
-    background-position: 0;
-  }
-  to {
-    background-position: -200px;
-  }
+	from {
+		background-position: 0;
+	}
+	to {
+		background-position: -200px;
+	}
 }
 
-.video-container{
-  margin-top: 20px;
-  border-radius: 20px;
+.video-container {
+	margin-top: 20px;
+	border-radius: 20px;
 }
 
-.markdown-body{
-  padding: 30px;
-  background: #F3F0E0;
-  margin: 20px;
-  border-radius: 10px !important;
+.markdown-body {
+	padding: 30px;
+	background: #f3f0e0;
+	margin: 20px;
+	border-radius: 10px !important;
 }
 
 .markdown-body h1 {
-  font-size: 2em;
-  color: #333;
-  margin-top: 1em;
-  margin-bottom: 0.2em;
+	font-size: 2em;
+	color: #333;
+	margin-top: 1em;
+	margin-bottom: 0.2em;
 }
 
 .markdown-body h2 {
-  font-size: 1.75em;
-  color: #444;
-  margin-top: 1em;
-  margin-bottom: 0.5em;
+	font-size: 1.75em;
+	color: #444;
+	margin-top: 1em;
+	margin-bottom: 0.5em;
 }
 
 .markdown-body h3 {
-  font-size: 1.5em;
-  color: #555;
-  margin-top: 1em;
-  margin-bottom: 0.5em;
+	font-size: 1.5em;
+	color: #555;
+	margin-top: 1em;
+	margin-bottom: 0.5em;
 }
 
 .markdown-body h4 {
-  font-size: 1.25em;
-  color: #666;
-  margin-top: 1em;
-  margin-bottom: 0.5em;
+	font-size: 1.25em;
+	color: #666;
+	margin-top: 1em;
+	margin-bottom: 0.5em;
 }
 
 .markdown-body h5 {
-  font-size: 1em;
-  color: #777;
-  margin-top: 1em;
-  margin-bottom: 0.5em;
+	font-size: 1em;
+	color: #777;
+	margin-top: 1em;
+	margin-bottom: 0.5em;
 }
 
 .markdown-body h6 {
-  font-size: 0.875em;
-  color: #888;
-  margin-top: 1em;
-  margin-bottom: 0.5em;
+	font-size: 0.875em;
+	color: #888;
+	margin-top: 1em;
+	margin-bottom: 0.5em;
 }
 
 .markdown-body ul {
-  list-style-type: disc;
-  margin-left: 1.5em;
+	list-style-type: disc;
+	margin-left: 1.5em;
 }
 
 .markdown-body ol {
-  list-style-type: decimal;
-  margin-left: 1.5em;
+	list-style-type: decimal;
+	margin-left: 1.5em;
 }
 
 .markdown-body a {
-  color: #C401C4;
-  text-decoration: underline;
+	color: #c401c4;
+	text-decoration: underline;
+}
+
+.markdown-body a:hover {
+	color: #a601a6;
+}
+
+.markdown-body a.breadcrumb {
+	color: #50da4c;
+	text-underline-offset: 5px;
+	transition: all 300ms ease-in-out;
+}
+
+.markdown-body a.breadcrumb:hover {
+	color: #183717;
 }
 
 .markdown-body pre {
-  background-color: #303030; 
-  border-radius: 7px; 
-  font-size: 0.85em; 
-  overflow: auto; 
+	background-color: #303030;
+	border-radius: 7px;
+	font-size: 0.85em;
+	overflow: auto;
 }
-
 
 .markdown-body blockquote {
-  border-left: 4px solid #ccc;
-  padding-left: 1em;
-  margin-left: 0;
-  color: #555;
-  font-style: italic;
+	border-left: 4px solid #ccc;
+	padding-left: 1em;
+	margin-left: 0;
+	color: #555;
+	font-style: italic;
 }
 
-pre div{
-  background-color: #303030 !important ;
+pre div {
+	background-color: #303030 !important ;
 }
-
 
 .loader {
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  position: relative;
-  animation: rotate 1s linear infinite
+	width: 48px;
+	height: 48px;
+	border-radius: 50%;
+	position: relative;
+	animation: rotate 1s linear infinite;
 }
-.loader::before , .loader::after {
-  content: "";
-  box-sizing: border-box;
-  position: absolute;
-  inset: 0px;
-  border-radius: 50%;
-  border: 5px solid #FFF;
-  animation: prixClipFix 2s linear infinite ;
+.loader::before,
+.loader::after {
+	content: "";
+	box-sizing: border-box;
+	position: absolute;
+	inset: 0px;
+	border-radius: 50%;
+	border: 5px solid #fff;
+	animation: prixClipFix 2s linear infinite;
 }
-.loader::after{
-  inset: 8px;
-  transform: rotate3d(90, 90, 0, 180deg );
-  border-color: #50DA4C;
+.loader::after {
+	inset: 8px;
+	transform: rotate3d(90, 90, 0, 180deg);
+	border-color: #50da4c;
 }
 
 @keyframes rotate {
-  0%   {transform: rotate(0deg)}
-  100%   {transform: rotate(360deg)}
+	0% {
+		transform: rotate(0deg);
+	}
+	100% {
+		transform: rotate(360deg);
+	}
 }
 
 @keyframes prixClipFix {
-    0%   {clip-path:polygon(50% 50%,0 0,0 0,0 0,0 0,0 0)}
-    50%  {clip-path:polygon(50% 50%,0 0,100% 0,100% 0,100% 0,100% 0)}
-    75%, 100%  {clip-path:polygon(50% 50%,0 0,100% 0,100% 100%,100% 100%,100% 100%)}
+	0% {
+		clip-path: polygon(50% 50%, 0 0, 0 0, 0 0, 0 0, 0 0);
+	}
+	50% {
+		clip-path: polygon(50% 50%, 0 0, 100% 0, 100% 0, 100% 0, 100% 0);
+	}
+	75%,
+	100% {
+		clip-path: polygon(
+			50% 50%,
+			0 0,
+			100% 0,
+			100% 100%,
+			100% 100%,
+			100% 100%
+		);
+	}
 }
 
-
-@media only screen and (max-width:768px){
-  .markdown-body{
-    padding: 20px;
-  }
+@media only screen and (max-width: 768px) {
+	.markdown-body {
+		padding: 20px;
+	}
 }
-
-  
 
 .video-container {
-  border: 2px solid #50DA4C;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 12px;
-  overflow: hidden; 
-  background-color: #363636; 
-  min-width: 300px;
-  max-height: fit-content;
-  margin: 20px 20px;
-  min-height: 340px;
+	border: 2px solid #50da4c;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: 12px;
+	overflow: hidden;
+	margin: 20px 20px;
 }
 
 .video-player {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  border-radius: 12px;
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	border-radius: 12px;
 }
 
 @media (max-width: 768px) {
-  .video-container {
-    max-width: 100%;
-    min-height: 250px; 
-  }
+	.video-container {
+		height: fit-content;
+		margin: 0;
+		border: none;
+		border-radius: 0;
+	}
+
+	.markdown-body {
+		margin: 0;
+		border-radius: 0;
+		padding-top: 36px;
+	}
+
+	video {
+		width: 100%;
+		height: 100%;
+		min-width: 100%;
+	}
 }
 
-@media (max-width: 480px) {
-  .video-container {
-    min-height: 180px;
-  }
+.text-greeennn {
+	color: #50da4c !important;
 }
 
-.description-scrollable {
-  max-height: 100vh; 
-  overflow-y: auto;  
-}
+@media ((min-width: 768px) and (max-width: 1024px)) {
+	.container.mx-auto {
+		min-width: 95vw;
+	}
 
-.text-greeennn{
-  color: #50DA4C !important;
+	.video-wrapper {
+		top: 4rem;
+	}
 }

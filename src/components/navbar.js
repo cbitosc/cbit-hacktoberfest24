@@ -58,10 +58,8 @@ const Navbar = () => {
 			};
 
 			if (document.readyState === "complete") {
-				console.log("complete");
 				observeAll();
 			} else {
-				console.log("not complete");
 				window.addEventListener("load", observeAll);
 			}
 
@@ -113,6 +111,8 @@ const Navbar = () => {
 							}
 							alt="Hacktober Fest 2024 Logo"
 							width={200}
+							height={55}
+							priority={true}
 						/>
 					</Link>
 				</div>
@@ -258,9 +258,7 @@ const Navbar = () => {
 							</div>
 							<div className="py-6">
 								<Link
-									href={
-										pathname === "/" ? "#timer" : "/#timer"
-									}
+									href= "/register"
 									className={cn(
 										"-mx-3 block rounded-lg px-3 py-2.5",
 										"text-base font-semibold leading-7",

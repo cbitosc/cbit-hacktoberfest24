@@ -104,7 +104,6 @@ export default function Home() {
 						<svg
 							className="bg-darkgrey flex h-fit  flex-col items-end justify-end"
 							width="100%"
-							height="auto"
 							viewBox="0 0 1386 230"
 							fill="none"
 							xmlns="http://www.w3.org/2000/svg"
