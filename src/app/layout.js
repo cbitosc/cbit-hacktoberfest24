@@ -4,7 +4,9 @@ import Navbar from "@/components/navbar";
 import Footer from "@/components/footer";
 import cn from "@/utils/cn";
 import { SimulatedDarkModeProvider } from "@/utils/contexts/SimulatedDarkModeDetection";
-import Script from 'next/script';
+import Script from "next/script";
+import toast, { Toaster } from "react-hot-toast";
+import { AuthProvider } from "@/utils/contexts/AuthContext";
 
 const sg = localFont({
 	src: "./fonts/sg.woff2",
@@ -67,18 +69,20 @@ export default function RootLayout({ children }) {
 	const GA_TRACKING_ID = process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID;
 
 	return (
-		
 		<html lang="en" suppressHydrationWarning={true}>
-			 <head>
-            {/* Google Analytics */}
-            {GA_TRACKING_ID && (
-               <>
-                  <Script
-                     src={`https://www.googletagmanager.com/gtag/js?id=${GA_TRACKING_ID}`}
-                     strategy="afterInteractive"
-                  />
-                  <Script id="google-analytics" strategy="afterInteractive">
-                     {`
+			<head>
+				{/* Google Analytics */}
+				{GA_TRACKING_ID && (
+					<>
+						<Script
+							src={`https://www.googletagmanager.com/gtag/js?id=${GA_TRACKING_ID}`}
+							strategy="afterInteractive"
+						/>
+						<Script
+							id="google-analytics"
+							strategy="afterInteractive"
+						>
+							{`
                         window.dataLayer = window.dataLayer || [];
                         function gtag(){dataLayer.push(arguments);}
                         gtag('js', new Date());
@@ -86,10 +90,10 @@ export default function RootLayout({ children }) {
                            page_path: window.location.pathname,
                         });
                      `}
-                  </Script>
-               </>
-            )}
-         </head>
+						</Script>
+					</>
+				)}
+			</head>
 			<body
 				className={cn(
 					`${sg.variable} ${geistMono.variable}`,
@@ -99,10 +103,13 @@ export default function RootLayout({ children }) {
 				suppressHydrationWarning={true}
 			>
 				<SimulatedDarkModeProvider>
-					<Navbar />
-					{children}
-					<Footer />
+					<AuthProvider>
+						<Navbar />
+						{children}
+						<Footer />
+					</AuthProvider>
 				</SimulatedDarkModeProvider>
+				<Toaster position="top-center" reverseOrder={false} />
 			</body>
 		</html>
 	);

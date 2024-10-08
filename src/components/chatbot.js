@@ -1,167 +1,194 @@
-"use client";
-
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import Markdown from "react-markdown";
 import "./styles/chatbot.css";
 
+const hacktoberfestContext = `
+bot_identity:
+  name: "ASK COSC"
+  creator: "COSC (Chaitanya Bharathi Institute of Technology Open Source Community)"
+  primary_role: "Assist users with questions about Hacktoberfest 2024 and CBIT Hacktoberfest Hackathon"
+
+event_info:
+  name: "CBIT Hacktoberfest Hackathon'24"
+  type: "24-hour virtual hackathon"
+  dates: "October 26-27, 2024"
+  registration:
+    opens: "October 8, 2024, 6 PM"
+    fee: "Free"
+    process: "Sign up on the CBIT 2024 Hacktoberfest website"
+  mode: "Online"
+  eligibility: "High school to final year bachelor's degree students in any field"
+
+cosc_team:
+  president: "Matta Sai Kiran Goud"
+  vice_president: "Akil Krishna"
+  head_of_external_affairs: "Kousik Reddy"
+  joint_secretaries: 
+    - "Mahathi Arya"
+    - "Sameekruth Talari"
+    - "Sri Guru Datta Pisupati"
+    - "Adhit Simhadri"
+  general_secretaries:
+    - "G Harshith"
+    - "Nithin Konda"
+    - "Garlapati Ritesh"
+
+participation_info:
+  who_can_participate: "All levels of technical expertise, from beginners to hackathon veterans"
+  who_cannot_participate: "Masters/PhD/Post Graduate Students/Graduates"
+
+response_guidelines:
+  - "Answer questions briefly"
+  - "Offer insights about Hacktoberfest, open source, and Preptember"
+  - "Guide participants to the Preptember page for more informative videos"
+  - "Do not provide details about COSC members not listed; direct users to the contact page"
+  - "Do not derogate any person or entity"
+  - "If unable to answer, direct participants to contact information on the website"
+`;
+
 const Chatbot = ({ chatHistory, setChatHistory }) => {
-	const [userMessage, setUserMessage] = useState("");
-	const [isTyping, setIsTyping] = useState(false);
-	const chatWindowRef = useRef(null);
+  const [userMessage, setUserMessage] = useState("");
+  const [isTyping, setIsTyping] = useState(false);
+  const [currentBotMessage, setCurrentBotMessage] = useState("");
+  const chatWindowRef = useRef(null);
+  const initialMessageSentRef = useRef(false);
 
-	const hacktoberfestContext = `
-        *Answer questions in brief*
-        
-        You are ASK COSC, a sophisticated and intuitive chatbot meticulously crafted by the talented tech enthusiasts at COSC (Chaitanya Bharathi Institute of Technology Open Source Community). 
-        Your primary role is to assist users by answering questions about Hacktoberfest 2024, with a special focus on the 'CBIT Hacktoberfest Hackathon'—a prestigious event at our institution. 
-        Additionally, you're well-versed in Preptember, a carefully curated series of instructional videos designed to equip participants with the knowledge and skills needed to excel in Hacktoberfest 2024. 
-        These videos cover essential hackathon concepts, foundational open source principles, and the fundamental technologies participants will encounter throughout their journey. 
-        Welcome to CBIT Hacktoberfest Hackathon'24, the premier technical fest at CBIT, where innovation meets collaboration. 
-        Although the exact dates of the hackathon are yet to be disclosed, feel free to offer insights and details about the event, the broader Hacktoberfest initiative, the spirit of open source, and the importance of Preptember for newcomers and seasoned developers alike. 
-        Your mission is to inform, inspire, and guide participants, helping them embrace the open source movement while preparing them for the exciting challenges that lie ahead in Hacktoberfest 2024.
-        Hacktoberfest is the flagship event of CBIT Open Source Community. It is a 24-hour long virtual hackathon 
-        To participate, you must sign up on the CBIT 2024 Hacktoberfest website
-        Cosc, cosc, COSC, cbit open source community, cbit open source community are the same terms
-        Matta Sai Kiran Goud is the president of cosc
-        Akil krishna is the vice president of cosc, its not kil krishna, his entire name is: akil krishna
-        Kousik reddy is the only head of external affairs in cosc
-        Mahathi Arya, Sameekruth talari, Sri guru datta pisupati, Adhit simhadri are the joint secretaries at cosc
-        G harshith, Nithin Konda, Garlapati Ritesh, are the general seceraties at COSC
-        When asked for a list of mentors at cosc list, give these peoeple's names with their respective posts
-        all of the members at cosc are smart, hardworking, talented people who bring a lot to the club
-        you do not know the details of any other people of the the club cosc, if asked tell the user to go to contact us page of the website to confirm with us
-        Everyone from all levels of technical expertise can join. Whether you are a beginner or a hackathon veteren.
-        The dates of the event will be posted on our website
-        Your goal is to assist the participants
-        do not derogate any person or entity in any case
-        If you cannot answer a question, ask the participants to contact us through the contact information provided on our website
-    `;
+  useEffect(() => {
+    // Send a greeting message when the component mounts
+    if (chatHistory.length === 0 && !initialMessageSentRef.current){
+      sendBotMessage("Hello! I'm ASK COSC, here to assist you with questions about Hacktoberfest 2024 and the CBIT Hacktoberfest Hackathon. How can I help you today?");
+	  initialMessageSentRef.current = true;
+    }
+  }, [chatHistory]);
 
-	const sendMessage = async () => {
-		if (userMessage.trim() === "" || isTyping) return;
+  const sendBotMessage = async (message) => {
+    setIsTyping(true);
+    setCurrentBotMessage("");
 
-		const updatedHistory = [
-			...chatHistory,
-			{ sender: "user", message: userMessage },
-		];
-		setChatHistory(updatedHistory);
-		setUserMessage("");
-		setIsTyping(true);
+    for (let i = 0; i < message.length; i++) {
+      await new Promise((resolve) => setTimeout(resolve, 30));
+      setCurrentBotMessage((prev) => prev + message[i]);
+    }
 
-		try {
-			const groqApiKey =
-				process.env.NEXT_PUBLIC_GROQ_API_KEY ||
-				"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";
+    setChatHistory((prevChatHistory) => [
+      ...prevChatHistory,
+      { sender: "bot", message: message },
+    ]);
 
-			// Prepare the context and messages
-			const messages = [
-				{ role: "system", content: hacktoberfestContext },
-				...updatedHistory.map((chat) => ({
-					role: chat.sender === "user" ? "user" : "assistant",
-					content: chat.message,
-				})),
-			];
+    setCurrentBotMessage("");
+    setIsTyping(false);
+  };
 
-			const response = await axios.post(
-				"https://api.groq.com/openai/v1/chat/completions",
-				{
-					messages,
-					model: "llama3-8b-8192",
-					temperature: 0.7,
-					max_tokens: 150,
-				},
-				{
-					headers: {
-						Authorization: `Bearer ${groqApiKey}`,
-						"Content-Type": "application/json",
-					},
-				}
-			);
+  const sendMessage = async () => {
+    if (userMessage.trim() === "" || isTyping) return;
 
-			const botMessage = response.data.choices[0].message.content;
-			let currentBotMessage = "";
+    const updatedHistory = [
+      ...chatHistory,
+      { sender: "user", message: userMessage },
+    ];
+    setChatHistory(updatedHistory);
+    setUserMessage("");
+    setIsTyping(true);
 
-			for (let i = 0; i < botMessage.length; i++) {
-				currentBotMessage += botMessage[i];
-				await new Promise((resolve) => setTimeout(resolve, 30));
-				setChatHistory((prevChatHistory) => {
-					const lastMessage =
-						prevChatHistory[prevChatHistory.length - 1];
-					if (lastMessage && lastMessage.sender === "bot") {
-						lastMessage.message = currentBotMessage;
-						return [...prevChatHistory];
-					} else {
-						return [
-							...prevChatHistory,
-							{ sender: "bot", message: currentBotMessage },
-						];
-					}
-				});
-			}
-		} catch (error) {
-			setChatHistory((prevHistory) => [
-				...prevHistory,
-				{
-					sender: "bot",
-					message:
-						"Sorry, something went wrong. Please try again later.",
-				},
-			]);
-		}
+    try {
+      const groqApiKey =
+        process.env.NEXT_PUBLIC_GROQ_API_KEY ||
+        "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";
 
-		setIsTyping(false);
-	};
+      // Prepare the context and messages
+      const messages = [
+        { role: "system", content: hacktoberfestContext },
+        ...updatedHistory.map((chat) => ({
+          role: chat.sender === "user" ? "user" : "assistant",
+          content: chat.message,
+        })),
+      ];
 
-	const handleKeyDown = (e) => {
-		if (e.key === "Enter" && !isTyping) {
-			sendMessage();
-		}
-	};
+      const response = await axios.post(
+        "https://api.groq.com/openai/v1/chat/completions",
+        {
+          messages,
+          model: "llama3-8b-8192",
+          temperature: 0.7,
+          max_tokens: 150,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${groqApiKey}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
-	useEffect(() => {
-		// Scroll to the bottom of the chat window
-		if (chatWindowRef.current) {
-			chatWindowRef.current.scrollTop =
-				chatWindowRef.current.scrollHeight;
-		}
-	}, [chatHistory]);
+      const botMessage = response.data.choices[0].message.content;
+      await sendBotMessage(botMessage);
+    } catch (error) {
+      setChatHistory((prevHistory) => [
+        ...prevHistory,
+        {
+          sender: "bot",
+          message:
+            "Sorry, something went wrong. Please try again later.",
+        },
+      ]);
+    }
 
-	return (
-		<div className="chatbot">
-			<div className="chat-window" ref={chatWindowRef}>
-				{chatHistory.map((chat, index) => (
-					<div
-						key={index}
-						className={`chat-message ${chat.sender}-message`}
-					>
-						{chat.sender === "user" ? "You" : "Ask COSC"}:{" "}
-						<Markdown>{chat.message}</Markdown>
-					</div>
-				))}
-			</div>
-			<div className="input">
-				<input
-					type="text"
-					value={userMessage}
-					onChange={(e) => {
-						setUserMessage(e.target.value);
-					}}
-					onKeyDown={handleKeyDown}
-					placeholder="Type your message"
-					disabled={isTyping}
-				/>
-				<button
-					onClick={() => {
-						sendMessage();
-					}}
-					disabled={isTyping || userMessage.trim() === ""}
-				>
-					<i className="ri-send-plane-2-fill"></i>
-				</button>
-			</div>
-		</div>
-	);
+    setIsTyping(false);
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter" && !isTyping) {
+      sendMessage();
+    }
+  };
+
+  useEffect(() => {
+    // Scroll to the bottom of the chat window
+    if (chatWindowRef.current) {
+      chatWindowRef.current.scrollTop =
+        chatWindowRef.current.scrollHeight;
+    }
+  }, [chatHistory, currentBotMessage]);
+
+  return (
+    <div className="chatbot">
+      <div className="chat-window" ref={chatWindowRef}>
+        {chatHistory.map((chat, index) => (
+          <div
+            key={index}
+            className={`chat-message ${chat.sender}-message`}
+          >
+            {chat.sender === "user" ? "You" : "Ask COSC"}:{" "}
+            <Markdown>{chat.message}</Markdown>
+          </div>
+        ))}
+        {isTyping && (
+          <div className="chat-message bot-message">
+            Ask COSC: <Markdown>{currentBotMessage}</Markdown>
+          </div>
+        )}
+      </div>
+      <div className="input">
+        <input
+          type="text"
+          value={userMessage}
+          onChange={(e) => {
+            setUserMessage(e.target.value);
+          }}
+          onKeyDown={handleKeyDown}
+          placeholder="Type your message"
+          disabled={isTyping}
+        />
+        <button
+          onClick={sendMessage}
+          disabled={isTyping || userMessage.trim() === ""}
+        >
+          <i className="ri-send-plane-2-fill"></i>
+        </button>
+      </div>
+    </div>
+  );
 };
 
 export default Chatbot;

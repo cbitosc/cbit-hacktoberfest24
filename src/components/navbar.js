@@ -8,6 +8,8 @@ import { usePathname } from "next/navigation";
 import cn from "@/utils/cn";
 import { FaRightLong } from "react-icons/fa6";
 import { useSimulatedDarkMode } from "@/utils/contexts/SimulatedDarkModeDetection";
+import { useAuth } from "@/utils/contexts/AuthContext";
+import { LogOutIcon } from "lucide-react";
 
 const Navbar = () => {
 	const [menuOpen, setMenuOpen] = useState(false);
@@ -15,6 +17,7 @@ const Navbar = () => {
 	const [activeLink, setActiveLink] = useState(null);
 	const simulatedDarkMode = useSimulatedDarkMode();
 	const pathname = usePathname();
+	const { user, logout, isRegistered } = useAuth();
 
 	useEffect(() => {
 		if (menuOpen) {
@@ -174,19 +177,57 @@ const Navbar = () => {
 					))}
 				</div>
 				<div className="hidden lg:flex lg:flex-1 lg:justify-end">
-					<Link
-						href={pathname === "/" ? "#timer" : "/#timer"}
-						className={cn(
-							"text-sm font-semibold leading-6",
-							"text-darkgreen px-4 py-2 rounded-lg",
-							navTransparent
-								? "bg-lightgreen hover:bg-green hover:text-darkgreen"
-								: "bg-green hover:bg-darkgreen hover:text-beige",
-							"transition-colors duration-300 ease-in-out"
-						)}
-					>
-						Register <span aria-hidden="true">&rarr;</span>
-					</Link>
+					{user ? (
+						<div className="flex gap-2">
+							<Link
+								href={
+									isRegistered
+										? "/teamdetails"
+										: "/registration"
+								}
+								className={cn(
+									"text-sm font-semibold leading-6",
+									"text-darkgreen px-4 py-2 rounded-lg",
+									navTransparent
+										? "text-green bg-transparent hover:bg-green hover:text-darkgreen"
+										: "bg-transparent hover:bg-green hover:text-darkgreen",
+									"transition-colors duration-300 ease-in-out"
+								)}
+							>
+								{isRegistered
+									? "Team Details"
+									: "Complete Registration"}
+							</Link>
+							<button
+								className={cn(
+									"text-sm font-semibold leading-6",
+									"flex items-center gap-1",
+									"text-darkgreen px-4 py-2 rounded-lg",
+									navTransparent
+										? "text-red-400 bg-transparent hover:bg-red-500 hover:text-red-50"
+										: "text-red-800 hover:bg-red-500 hover:text-red-50",
+									"transition-colors duration-300 ease-in-out"
+								)}
+								onClick={logout}
+							>
+								Logout <LogOutIcon className="w-4" />
+							</button>
+						</div>
+					) : (
+						<Link
+							href="/register"
+							className={cn(
+								"text-sm font-semibold leading-6",
+								"text-darkgreen px-4 py-2 rounded-lg",
+								navTransparent
+									? "bg-lightgreen hover:bg-green hover:text-darkgreen"
+									: "bg-green hover:bg-darkgreen hover:text-beige",
+								"transition-colors duration-300 ease-in-out"
+							)}
+						>
+							Register <span aria-hidden="true">&rarr;</span>
+						</Link>
+					)}
 				</div>
 			</nav>
 			{/* Mobile menu */}
@@ -257,20 +298,51 @@ const Navbar = () => {
 								))}
 							</div>
 							<div className="py-6">
-								<Link
-									href={pathname === "/" ? "#timer" : "/#timer"}
-									className={cn(
-										"-mx-3 block rounded-lg px-3 py-2.5",
-										"text-base font-semibold leading-7",
-										"text-gray-900 transition-colors duration-300 ease-in-out",
-										"bg-green text-darkgreen hover:text-lightgreen focus:text-lightgreen hover:bg-darkgreen focus:bg-darkgreen",
-										"flex items-center justify-between"
-									)}
-									onClick={() => setMenuOpen(false)}
-								>
-									Register
-									<FaRightLong />
-								</Link>
+								{user ? (
+									<div className="flex gap-2 w-full">
+										<Link
+											href="/teamdetails"
+											className={cn(
+												"rounded-lg px-3 py-2.5 flex-1",
+												"text-base font-semibold leading-7",
+												"text-gray-900 transition-colors duration-300 ease-in-out",
+												"bg-green text-darkgreen hover:text-lightgreen focus:text-lightgreen hover:bg-darkgreen focus:bg-darkgreen",
+												"flex items-center justify-between"
+											)}
+										>
+											Team Details
+											<FaRightLong />
+										</Link>
+										<button
+											onClick={logout}
+											className={cn(
+												"block rounded-lg px-3 py-2.5 flex-1",
+												"text-base font-semibold leading-7",
+												"text-gray-900 transition-colors duration-300 ease-in-out",
+												"bg-red-400 text-beige hover:text-red-50 focus:text-red-50 hover:bg-red-500 focus:bg-red-500",
+												"flex items-center justify-between"
+											)}
+										>
+											Logout
+											<LogOutIcon />
+										</button>
+									</div>
+								) : (
+									<Link
+										href="/register"
+										className={cn(
+											"-mx-3 block rounded-lg px-3 py-2.5",
+											"text-base font-semibold leading-7",
+											"text-gray-900 transition-colors duration-300 ease-in-out",
+											"bg-green text-darkgreen hover:text-lightgreen focus:text-lightgreen hover:bg-darkgreen focus:bg-darkgreen",
+											"flex items-center justify-between"
+										)}
+										onClick={() => setMenuOpen(false)}
+									>
+										Register
+										<FaRightLong />
+									</Link>
+								)}
 							</div>
 						</div>
 					</div>

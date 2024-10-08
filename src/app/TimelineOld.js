@@ -93,7 +93,7 @@ export default function Timeline() {
 							multiplier={1}
 						/>
 						<TimelineItem
-							date="In the works..."
+							date="7th October 2024"
 							title="Preptember Video 4"
 							content="In this video, we will dig into app development"
 							icon={<FaLightbulb fontSize={12} />}
@@ -102,14 +102,14 @@ export default function Timeline() {
 						<div></div>
 						<div></div>
 						<TimelineItem
-							date="In the works..."
+							date="9th October 2024"
 							title="Preptember Video 5"
 							content="This video covers the fundamentals of Machine Learning, a popular domain in hackathons, and how to effectively apply them to your projects."
 							icon={<FaLightbulb fontSize={12} />}
 							multiplier={1}
 						/>
 						<TimelineItem
-							date="In the works..."
+							date="11th October 2024"
 							title="Preptember Video 6"
 							content="In the last video of this series, we explain how to use databases and integrate all the parts of your project."
 							icon={<FaLightbulb fontSize={12} />}

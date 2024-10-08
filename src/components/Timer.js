@@ -83,7 +83,7 @@ const Timer = ({ launchDate }) => {
 					<StackedText text="When???" fontSize="75px" />
 					<span className="text-beige mt-7">
 						{" "}
-						Registrations begin in..{" "}
+						Hackathon Starts In..{" "}
 					</span>
 				</h1>
 				<div className="flex-col w-full justify-between items-center lg:flex-row">

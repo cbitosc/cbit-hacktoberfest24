@@ -2,7 +2,7 @@
 import React from "react";
 import Boxes from "@/components/ui/background-boxes";
 import cn from "../utils/cn";
-import TypingEffect from "@/app/preptember/TypingEffect";
+import TypingEffect2 from "./TypingEffect2";
 import Link from "next/link";
 
 export default function HeroMod() {
@@ -30,7 +30,7 @@ export default function HeroMod() {
 					/>
 				</div>
 				<h1 className="md:text-5xl text-4xl text-center text-[#f3f0e0] my-8 font-bold">
-					<TypingEffect
+					<TypingEffect2
 						text="CBIT Hacktoberfest Hackathon'24"
 						speed={70}
 					/>
@@ -43,7 +43,7 @@ export default function HeroMod() {
 				{/* adding a big button with background #183717 and border #50da4c with border full with stroke 2 */}
 				<div className="flex flex-col items-center mt-8 w-[30vh] pointer-events-auto">
 					<Link
-						href="#timer"
+						href="/register"
 						className={cn(
 							"bg-[#183717] border-[#50da4c] border-2 md:h-[7vh] text-[#50da4c]",
 							"px-6 py-2 rounded-full mt-8 hover:bg-[#50da4c] hover:text-[#183717]",
@@ -51,7 +51,7 @@ export default function HeroMod() {
 							"flex justify-center items-center"
 						)}
 					>
-						Coming Soon
+						Register Now!
 					</Link>
 				</div>
 			</div>
