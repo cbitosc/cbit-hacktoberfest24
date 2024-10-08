@@ -6,7 +6,7 @@ import { ChevronDown, ChevronUp, Plus } from "lucide-react";
 import TypingEffect2 from "@/app/TypingEffect2";
 import toast from "react-hot-toast";
 import { motion, AnimatePresence } from "framer-motion";
-import "../styles/registration.css";
+import "../../styles/registration.css";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth, db } from "@/app/firebase";
 import {
@@ -17,23 +17,27 @@ import {
 	setDoc,
 	collection,
 	addDoc,
+	getDoc,
 } from "firebase/firestore";
 import { useRouter } from "next/navigation";
-import RegistrationPopup from "./registrationpopup";
+import RegistrationPopup from "./../registrationpopup";
 import { useAuth } from "@/utils/contexts/AuthContext";
 
-const useExpandedIndex = () => {
+export default async function EditRegisterForm() {
 	const [expandedIndex, setExpandedIndex] = useState(0);
-	return { expandedIndex, setExpandedIndex };
-  };
-  
-
-export default function RegisterForm() {
-	const { expandedIndex, setExpandedIndex } = useExpandedIndex();
 	const [user, loading] = useAuthState(auth);
 	const router = useRouter();
 	const { setIsRegistered } = useAuth();
 	const [isSubmitting, setIsSubmitting] = useState(false);
+	const currentData = await getDoc(doc(db, "teams", user.uid));
+	if (!currentData.exists()) {
+		router.replace("/registration");
+	}
+	const { teamName, techStack, participants } = currentData.data();
+	if (!teamName || !techStack || !participants) {
+		router.replace("/registration");
+	}
+
 	const {
 		register,
 		control,
@@ -43,25 +47,9 @@ export default function RegisterForm() {
 		setValue,
 	} = useForm({
 		defaultValues: {
-			teamName: "",
-			techStack: [],
-			otherTechStack: "",
-			participants: [
-				{
-					name: "",
-					phone: "",
-					email: user?.email || "",
-					gender: "",
-					rollNo: "",
-					institution: "",
-					otherInstitution: "",
-					yearOfStudy: "",
-					otherYearOfStudy: "",
-					branch: "",
-					otherBranch: "",
-					section: "",
-				},
-			],
+			teamName,
+			techStack,
+			participants,
 		},
 	});
 
@@ -258,7 +246,6 @@ export default function RegisterForm() {
 			await setDoc(teamDocRef, {
 				teamName: data.teamName,
 				techStack: data.techStack,
-				otherTechStack: data.otherTechStack,
 				createdAt: new Date(),
 				teamLeaderId: user.uid,
 				participants: enrichedParticipants,
@@ -326,15 +313,15 @@ export default function RegisterForm() {
 		"Other",
 	];
 
-	const ParticipantCard = React.memo(({ index }) => {
+	const ParticipantCard = ({ index }) => {
+		"use client";
 		const isExpanded = expandedIndex === index;
-	
+
 		React.useEffect(() => {
-		  if (index === 0 && user?.email) {
-			setValue(`participants.${index}.email`, user.email);
-		  }
+			if (index === 0 && user?.email) {
+				setValue(`participants.${index}.email`, user.email);
+			}
 		}, [user, index, setValue]);
-	
 
 		return (
 			<div className="mb-4 glassomorphism background-gradient rounded-md overflow-hidden">
@@ -689,9 +676,9 @@ export default function RegisterForm() {
 						</motion.div>
 					)}
 				</AnimatePresence>
-				</div>
-    );
-  });
+			</div>
+		);
+	};
 	return (
 		<div className="background-gradient flex flex-col items-center justify-center min-h-screen bg-darkgrey px-2 py-24">
 			<RegistrationPopup />
@@ -722,67 +709,45 @@ export default function RegisterForm() {
 					</div>
 
 					<div className="space-y-4">
-            <h3 className="text-white font-semibold">Team Members</h3>
-            {fields.map((field, index) => (
-              <ParticipantCard key={field.id} index={index} />
-            ))}
-          </div>
+						<h3 className="text-white font-semibold">
+							Team Members
+						</h3>
+						{fields.map((field, index) => (
+							<ParticipantCard key={field.id} index={index} />
+						))}
+					</div>
 
-          {/* Add Participant button */}
-          {fields.length < 5 && (
-            <button
-              type="button"
-              onClick={addParticipant}
-              className="w-full flex items-center justify-center px-4 py-2 bg-deeppink text-white rounded-md hover:bg-pink transition-colors duration-200"
-            >
-              <Plus className="w-5 h-5 mr-2" />
-              Add Participant
-            </button>
-          )}
+					{fields.length < 5 && (
+						<button
+							type="button"
+							onClick={addParticipant}
+							className="w-full flex items-center justify-center px-4 py-2 bg-deeppink text-white rounded-md hover:bg-pink transition-colors duration-200"
+						>
+							<Plus className="w-5 h-5 mr-2" />
+							Add Participant
+						</button>
+					)}
 
 					<div className="mb-6">
 						<label className="text-white block mb-2">
 							Team Tech Stack
 						</label>
-						<AnimatePresence>
-							<motion.div className="p-4 border border-green rounded-md">
-								<Controller
-									name={`techStack`}
-									control={control}
-									render={({ field }) => (
-										<>
-											{techStacks.map((stack, idx) => (
-												<label
-													key={idx}
-													className="flex items-center space-x-2"
-												>
-													<input
-														type="checkbox"
-														value={stack}
-														{...register(
-															"techStack"
-														)}
-														className="form-checkbox"
-													/>
-													<span className="text-white">
-														{stack}
-													</span>
-												</label>
-											))}
-											{field.value.includes("Other") && (
-												<input
-													{...register(
-														"otherTechStack"
-													)}
-													placeholder="Other tech stack(s) comma separated"
-													className="mt-2 w-full px-3 py-2 border border-green text-white bg-transparent rounded-md focus:outline-none focus:ring-2 focus:ring-pink"
-												/>
-											)}
-										</>
-									)}
-								/>
-							</motion.div>
-						</AnimatePresence>
+						<div className="p-4 border border-green rounded-md">
+							{techStacks.map((stack, idx) => (
+								<label
+									key={idx}
+									className="flex items-center space-x-2"
+								>
+									<input
+										type="checkbox"
+										value={stack}
+										{...register("techStack")}
+										className="form-checkbox"
+									/>
+									<span className="text-white">{stack}</span>
+								</label>
+							))}
+						</div>
 						{errors.techStack && (
 							<p className="text-red-500 mt-1">
 								{errors.techStack.message}
@@ -819,7 +784,7 @@ export default function RegisterForm() {
 			</div>
 			{isSubmitting && (
 				<div className="fixed inset-0 z-50 flex items-center justify-center glassomorphism">
-					<span className="loader loader"></span>
+					<span className="loader"></span>
 				</div>
 			)}
 		</div>
