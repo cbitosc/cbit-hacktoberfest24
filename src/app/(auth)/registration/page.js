@@ -819,7 +819,7 @@ export default function RegisterForm() {
 			</div>
 			{isSubmitting && (
 				<div className="fixed inset-0 z-50 flex items-center justify-center glassomorphism">
-					<span className="loader loader"></span>
+					<span className="loader"></span>
 				</div>
 			)}
 		</div>
