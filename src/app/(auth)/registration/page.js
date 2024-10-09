@@ -25,34 +25,35 @@ import { useAuth } from "@/utils/contexts/AuthContext";
 const useExpandedIndex = () => {
 	const [expandedIndex, setExpandedIndex] = useState(0);
 	return { expandedIndex, setExpandedIndex };
-  };
+};
 
-  const ConfirmationDialog = ({ isOpen, onClose, onConfirm, message }) => {
+const ConfirmationDialog = ({ isOpen, onClose, onConfirm, message }) => {
 	if (!isOpen) return null;
-  
+
 	return (
-	  <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-		<div className="bg-darkgrey border border-green rounded-lg p-6 max-w-sm w-full">
-		  <h2 className="text-white text-lg font-semibold mb-4">{message}</h2>
-		  <div className="flex justify-end space-x-4">
-			<button
-			  onClick={onClose}
-			  className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 transition-colors"
-			>
-			  Cancel
-			</button>
-			<button
-			  onClick={onConfirm}
-			  className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition-colors"
-			>
-			  Confirm
-			</button>
-		  </div>
+		<div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+			<div className="bg-darkgrey border border-green rounded-lg p-6 max-w-sm w-full">
+				<h2 className="text-white text-lg font-semibold mb-4">
+					{message}
+				</h2>
+				<div className="flex justify-end space-x-4">
+					<button
+						onClick={onClose}
+						className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 transition-colors"
+					>
+						Cancel
+					</button>
+					<button
+						onClick={onConfirm}
+						className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition-colors"
+					>
+						Confirm
+					</button>
+				</div>
+			</div>
 		</div>
-	  </div>
 	);
-  };
-  
+};
 
 export default function RegisterForm() {
 	const { expandedIndex, setExpandedIndex } = useExpandedIndex();
@@ -61,8 +62,8 @@ export default function RegisterForm() {
 	const { setIsRegistered } = useAuth();
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [dialogOpen, setDialogOpen] = useState(false);
-  const [participantToRemove, setParticipantToRemove] = useState(null);
-	
+	const [participantToRemove, setParticipantToRemove] = useState(null);
+
 	const {
 		register,
 		control,
@@ -137,168 +138,211 @@ export default function RegisterForm() {
 
 	const validateForm = (data) => {
 		const errors = [];
-	
-		if (data.teamName.trim().length < 2) {
-		  errors.push("Team name must be at least 2 characters");
-		}
-	
-		if (data.techStack.length === 0) {
-		  errors.push("Please select at least one tech stack");
-		}
-	
-		if (data.participants.length === 0) {
-		  errors.push("At least one participant is required");
-		}
-	
-		if (data.participants.length > 5) {
-		  errors.push("Maximum 5 participants allowed");
-		}
-	
-		if (data.techStack.includes("Other") && data.otherTechStack.trim().length < 2) {
-		  errors.push("Please specify other tech stack (at least 2 characters)");
-		}
-	
-		data.participants.forEach((participant, index) => {
-		  if (participant.name.trim().length < 2) {
-			errors.push(`Participant ${index + 1}: Name must be at least 2 characters`);
-		  }
-	
-		  if (!/^\d{10}$/.test(participant.phone.trim())) {
-			errors.push(`Participant ${index + 1}: Phone number must be 10 digits`);
-		  }
-	
-		  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(participant.email.trim())) {
-			errors.push(`Participant ${index + 1}: Invalid email address`);
-		  }
-	
-		  if (data.participants.filter((p) => p.email.trim() === participant.email.trim()).length > 1) {
-			errors.push(`Participant ${index + 1}: Duplicate email address`);
-		  }
-	
-		  if (!participant.gender) {
-			errors.push(`Participant ${index + 1}: Please select gender`);
-		  }
-	
-		  if (!participant.rollNo.trim()) {
-			errors.push(`Participant ${index + 1}: Roll number is required`);
-		  }
-	
-		  if (!participant.institution) {
-			errors.push(`Participant ${index + 1}: Please select college/university`);
-		  }
-	
-		  if (participant.institution === "other" && !participant.otherInstitution.trim()) {
-			errors.push(`Participant ${index + 1}: Please specify other institution`);
-		  }
-	
-		  if (!participant.yearOfStudy) {
-			errors.push(`Participant ${index + 1}: Please enter year of study`);
-		  }
-	
-		  if (!participant.branch) {
-			errors.push(`Participant ${index + 1}: Please select branch`);
-		  }
-	
-		  if (participant.branch === "other" && !participant.otherBranch.trim()) {
-			errors.push(`Participant ${index + 1}: Please specify other branch`);
-		  }
-	
-		  if (!participant.section.trim()) {
-			errors.push(`Participant ${index + 1}: Please select section`);
-		  }
-		});
-	
-		return errors;
-	  };
 
-	  const onSubmit = async (data) => {
+		if (data.teamName.trim().length < 2) {
+			errors.push("Team name must be at least 2 characters");
+		}
+
+		if (data.techStack.length === 0) {
+			errors.push("Please select at least one tech stack");
+		}
+
+		if (data.participants.length === 0) {
+			errors.push("At least one participant is required");
+		}
+
+		if (data.participants.length > 5) {
+			errors.push("Maximum 5 participants allowed");
+		}
+
+		if (
+			data.techStack.includes("Other") &&
+			data.otherTechStack.trim().length < 2
+		) {
+			errors.push(
+				"Please specify other tech stack (at least 2 characters)"
+			);
+		}
+
+		data.participants.forEach((participant, index) => {
+			if (participant.name.trim().length < 2) {
+				errors.push(
+					`Participant ${
+						index + 1
+					}: Name must be at least 2 characters`
+				);
+			}
+
+			if (!/^\d{10}$/.test(participant.phone.trim())) {
+				errors.push(
+					`Participant ${index + 1}: Phone number must be 10 digits`
+				);
+			}
+
+			if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(participant.email.trim())) {
+				errors.push(`Participant ${index + 1}: Invalid email address`);
+			}
+
+			if (
+				data.participants.filter(
+					(p) => p.email.trim() === participant.email.trim()
+				).length > 1
+			) {
+				errors.push(
+					`Participant ${index + 1}: Duplicate email address`
+				);
+			}
+
+			if (!participant.gender) {
+				errors.push(`Participant ${index + 1}: Please select gender`);
+			}
+
+			if (!participant.rollNo.trim()) {
+				errors.push(
+					`Participant ${index + 1}: Roll number is required`
+				);
+			}
+
+			if (!participant.institution) {
+				errors.push(
+					`Participant ${index + 1}: Please select college/university`
+				);
+			}
+
+			if (
+				participant.institution === "other" &&
+				!participant.otherInstitution.trim()
+			) {
+				errors.push(
+					`Participant ${index + 1}: Please specify other institution`
+				);
+			}
+
+			if (!participant.yearOfStudy) {
+				errors.push(
+					`Participant ${index + 1}: Please enter year of study`
+				);
+			}
+
+			if (!participant.branch) {
+				errors.push(`Participant ${index + 1}: Please select branch`);
+			}
+
+			if (
+				participant.branch === "other" &&
+				!participant.otherBranch.trim()
+			) {
+				errors.push(
+					`Participant ${index + 1}: Please specify other branch`
+				);
+			}
+
+			if (!participant.section.trim()) {
+				errors.push(`Participant ${index + 1}: Please select section`);
+			}
+		});
+
+		return errors;
+	};
+
+	const onSubmit = async (data) => {
 		setIsSubmitting(true);
 		const trimmedData = {
-		  ...data,
-		  teamName: data.teamName.trim(),
-		  otherTechStack: data.otherTechStack.trim(),
-		  participants: data.participants.map(participant => ({
-			...participant,
-			name: participant.name.trim(),
-			phone: participant.phone.trim(),
-			email: participant.email.trim(),
-			rollNo: participant.rollNo.trim(),
-			otherInstitution: participant.otherInstitution?.trim(),
-			otherYearOfStudy: participant.otherYearOfStudy?.trim(),
-			otherBranch: participant.otherBranch?.trim(),
-			section: participant.section.trim()
-		  }))
+			...data,
+			teamName: data.teamName.trim(),
+			otherTechStack: data.otherTechStack.trim(),
+			participants: data.participants.map((participant) => ({
+				...participant,
+				name: participant.name.trim(),
+				phone: participant.phone.trim(),
+				email: participant.email.trim(),
+				rollNo: participant.rollNo.trim(),
+				otherInstitution: participant.otherInstitution?.trim() || "",
+				otherYearOfStudy: participant.otherYearOfStudy?.trim() || "",
+				otherBranch: participant.otherBranch?.trim() || "",
+				section: participant.section.trim(),
+			})),
 		};
-		
-		const validationErrors = validateForm(trimmedData);
-	
-		if (validationErrors.length > 0) {
-		  const fewErrors = validationErrors.slice(0, 3);
-		  if (validationErrors.length > 3) {
-			toast.error(`And ${validationErrors.length - 3} more...`);
-		  }
-		  fewErrors.forEach((error) => toast.error(error));
-		  setIsSubmitting(false);
-		  return;
-		}
-	
-		try {
-		  if (!user) {
-			toast.error("You must be logged in to register a team");
-			setIsSubmitting(false);
-			return;
-		  }
-	
-		  // Check for duplicate emails
-		  const duplicateEmails = await checkDuplicateEmails(trimmedData.participants);
-		  if (duplicateEmails.length > 0) {
-			duplicateEmails.forEach(({ index, email }) => {
-			  toast.error(`Participant ${index + 1}: ${email} is already registered for the hackathon`);
-			});
-			setIsSubmitting(false);
-			return;
-		  }
-	
-		  const enrichedParticipants = trimmedData.participants.map((participant, index) => ({
-			...participant,
-			isTeamLeader: index === 0,
-			createdAt: new Date(),
-			participantId: `participant_${index + 1}`,
-		  }));
-	
-		  const teamDocRef = doc(db, "teams", user.uid);
-		  await setDoc(teamDocRef, {
-			teamName: trimmedData.teamName,
-			techStack: trimmedData.techStack,
-			otherTechStack: trimmedData.otherTechStack,
-			createdAt: new Date(),
-			teamLeaderId: user.uid,
-			participants: enrichedParticipants,
-			totalParticipants: enrichedParticipants.length,
-		  });
-	
-		  const participantsCollection = collection(db, "participants");
-		  const participantPromises = enrichedParticipants.map(async (participant) => {
-			return addDoc(participantsCollection, {
-			  ...participant,
-			  teamId: user.uid,
-			  teamName: trimmedData.teamName,
-			});
-		  });
-	
-		  await Promise.all(participantPromises);
-	
-		  toast.success("Registration successful!");
-		  setIsRegistered(true);
-		  router.push("/teamdetails");
-		} catch (error) {
-		  console.error("Error saving registration:", error);
-		  toast.error("Registration failed. Please try again.");
-		} finally {
-		  setIsSubmitting(false);
-		}
-	  };
 
+		const validationErrors = validateForm(trimmedData);
+
+		if (validationErrors.length > 0) {
+			const fewErrors = validationErrors.slice(0, 3);
+			if (validationErrors.length > 3) {
+				toast.error(`And ${validationErrors.length - 3} more...`);
+			}
+			fewErrors.forEach((error) => toast.error(error));
+			setIsSubmitting(false);
+			return;
+		}
+
+		try {
+			if (!user) {
+				toast.error("You must be logged in to register a team");
+				setIsSubmitting(false);
+				return;
+			}
+
+			// Check for duplicate emails
+			const duplicateEmails = await checkDuplicateEmails(
+				trimmedData.participants
+			);
+			if (duplicateEmails.length > 0) {
+				duplicateEmails.forEach(({ index, email }) => {
+					toast.error(
+						`Participant ${
+							index + 1
+						}: ${email} is already registered for the hackathon`
+					);
+				});
+				setIsSubmitting(false);
+				return;
+			}
+
+			const enrichedParticipants = trimmedData.participants.map(
+				(participant, index) => ({
+					...participant,
+					isTeamLeader: index === 0,
+					createdAt: new Date(),
+					participantId: `participant_${index + 1}`,
+				})
+			);
+
+			const teamDocRef = doc(db, "teams", user.uid);
+			const teamData = {
+				teamName: trimmedData.teamName,
+				techStack: trimmedData.techStack,
+				otherTechStack: trimmedData.otherTechStack,
+				createdAt: new Date(),
+				teamLeaderId: user.uid,
+				participants: enrichedParticipants,
+				totalParticipants: enrichedParticipants.length,
+			};
+			await setDoc(teamDocRef, teamData);
+
+			const participantsCollection = collection(db, "participants");
+			const participantPromises = enrichedParticipants.map(
+				async (participant) => {
+					return addDoc(participantsCollection, {
+						...participant,
+						teamId: user.uid,
+						teamName: trimmedData.teamName,
+					});
+				}
+			);
+
+			await Promise.all(participantPromises);
+
+			toast.success("Registration successful!");
+			setIsRegistered(true);
+			router.push("/teamdetails");
+		} catch (error) {
+			console.error("Error saving registration:", error);
+			toast.error("Registration failed. Please try again.");
+		} finally {
+			setIsSubmitting(false);
+		}
+	};
 
 	const addParticipant = () => {
 		if (fields.length < 5) {
@@ -321,23 +365,23 @@ export default function RegisterForm() {
 
 	const removeParticipant = (index) => {
 		if (fields.length > 1) {
-		  remove(index);
-		  setExpandedIndex(Math.max(0, index - 1));
+			remove(index);
+			setExpandedIndex(Math.max(0, index - 1));
 		}
-	  };
-	
-	  const handleRemoveClick = (index) => {
+	};
+
+	const handleRemoveClick = (index) => {
 		setParticipantToRemove(index);
 		setDialogOpen(true);
-	  };
-	
-	  const handleConfirmRemove = () => {
+	};
+
+	const handleConfirmRemove = () => {
 		if (participantToRemove !== null) {
-		  removeParticipant(participantToRemove);
+			removeParticipant(participantToRemove);
 		}
 		setDialogOpen(false);
 		setParticipantToRemove(null);
-	  };
+	};
 
 	const toggleExpand = (index) => {
 		setExpandedIndex(expandedIndex === index ? -1 : index);
@@ -349,18 +393,17 @@ export default function RegisterForm() {
 		"UI/UX",
 		"Machine Learning and Artificial Intelligence",
 		"Other",
-		"None", 
+		"None",
 	];
 
 	const ParticipantCard = React.memo(({ index }) => {
 		const isExpanded = expandedIndex === index;
-	
+
 		React.useEffect(() => {
-		  if (index === 0 && user?.email) {
-			setValue(`participants.${index}.email`, user.email);
-		  }
+			if (index === 0 && user?.email) {
+				setValue(`participants.${index}.email`, user.email);
+			}
 		}, [user, index, setValue]);
-	
 
 		return (
 			<div className="mb-4 glassomorphism background-gradient rounded-md overflow-hidden">
@@ -704,21 +747,21 @@ export default function RegisterForm() {
 							</div>
 
 							{index > 0 && (
-                <button
-                  type="button"
-                  onClick={() => handleRemoveClick(index)}
-                  className="w-full flex items-center justify-center px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-400 transition-colors duration-200"
-                >
-					<Trash2 className="w-5 h-5 mr-2" />
-                  Remove Participant
-                </button>
-              )}
+								<button
+									type="button"
+									onClick={() => handleRemoveClick(index)}
+									className="w-full flex items-center justify-center px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-400 transition-colors duration-200"
+								>
+									<Trash2 className="w-5 h-5 mr-2" />
+									Remove Participant
+								</button>
+							)}
 						</motion.div>
 					)}
 				</AnimatePresence>
-				</div>
-    );
-  });
+			</div>
+		);
+	});
 	return (
 		<div className="background-gradient flex flex-col items-center justify-center min-h-screen bg-darkgrey px-2 py-24">
 			<RegistrationPopup />
@@ -749,27 +792,30 @@ export default function RegisterForm() {
 					</div>
 
 					<div className="space-y-4">
-            <h3 className="text-white font-semibold">Team Members</h3>
-            {fields.map((field, index) => (
-              <ParticipantCard key={field.id} index={index} />
-            ))}
-          </div>
+						<h3 className="text-white font-semibold">
+							Team Members
+						</h3>
+						{fields.map((field, index) => (
+							<ParticipantCard key={field.id} index={index} />
+						))}
+					</div>
 
-          {/* Add Participant button */}
-          {fields.length < 5 && (
-            <button
-              type="button"
-              onClick={addParticipant}
-              className="w-full flex items-center justify-center px-4 py-2 bg-deeppink text-white rounded-md hover:bg-pink transition-colors duration-200"
-            >
-              <Plus className="w-5 h-5 mr-2" />
-              Add Participant
-            </button>
-          )}
+					{/* Add Participant button */}
+					{fields.length < 5 && (
+						<button
+							type="button"
+							onClick={addParticipant}
+							className="w-full flex items-center justify-center px-4 py-2 bg-deeppink text-white rounded-md hover:bg-pink transition-colors duration-200"
+						>
+							<Plus className="w-5 h-5 mr-2" />
+							Add Participant
+						</button>
+					)}
 
 					<div className="mb-6">
 						<label className="text-white block mb-2">
-							Which of the following tech stacks are you and your teammate familiar with?
+							Which of the following tech stacks are you and your
+							teammate familiar with?
 						</label>
 						<AnimatePresence>
 							<motion.div className="p-4 border border-green rounded-md">
@@ -786,21 +832,53 @@ export default function RegisterForm() {
 													<input
 														type="checkbox"
 														value={stack}
-														checked={field.value.includes(stack)}
+														checked={field.value.includes(
+															stack
+														)}
 														onChange={(e) => {
-														  let updatedValue;
-														  if (stack === "None") {
-															updatedValue = e.target.checked ? ["None"] : [];
-														  } else {
-															updatedValue = e.target.checked
-															  ? [...field.value.filter(item => item !== "None"), stack]
-															  : field.value.filter(item => item !== stack);
-														  }
-														  field.onChange(updatedValue);
+															let updatedValue;
+															if (
+																stack === "None"
+															) {
+																updatedValue = e
+																	.target
+																	.checked
+																	? ["None"]
+																	: [];
+															} else {
+																updatedValue = e
+																	.target
+																	.checked
+																	? [
+																			...field.value.filter(
+																				(
+																					item
+																				) =>
+																					item !==
+																					"None"
+																			),
+																			stack,
+																	  ]
+																	: field.value.filter(
+																			(
+																				item
+																			) =>
+																				item !==
+																				stack
+																	  );
+															}
+															field.onChange(
+																updatedValue
+															);
 														}}
-														disabled={stack !== "None" && field.value.includes("None")}
+														disabled={
+															stack !== "None" &&
+															field.value.includes(
+																"None"
+															)
+														}
 														className="form-checkbox"
-													  />
+													/>
 													<span className="text-white">
 														{stack}
 													</span>
@@ -860,12 +938,12 @@ export default function RegisterForm() {
 				</div>
 			)}
 
-<ConfirmationDialog
-        isOpen={dialogOpen}
-        onClose={() => setDialogOpen(false)}
-        onConfirm={handleConfirmRemove}
-        message="Are you sure you want to remove this participant? This action cannot be undone."
-      />
+			<ConfirmationDialog
+				isOpen={dialogOpen}
+				onClose={() => setDialogOpen(false)}
+				onConfirm={handleConfirmRemove}
+				message="Are you sure you want to remove this participant? This action cannot be undone."
+			/>
 		</div>
 	);
 }

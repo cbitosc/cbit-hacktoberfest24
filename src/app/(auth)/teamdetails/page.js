@@ -24,6 +24,7 @@ export default function TeamDetails() {
 	const [isLoading, setIsLoading] = useState(true);
 	const [showSuccessPopup, setShowSuccessPopup] = useState(false);
 	const router = useRouter();
+	const [isTeamLeader, setIsTeamLeader] = useState(true);
 
 	useEffect(() => {
 		const fetchTeamData = async () => {
@@ -68,6 +69,21 @@ export default function TeamDetails() {
 					if (!hasViewedTeamDetails) {
 						setShowSuccessPopup(true);
 						localStorage.setItem("hasViewedTeamDetails", "true");
+					}
+				} else {
+					// see if the user has registered
+					const userDoc = await getDoc(
+						query(
+							collection(db, "participants"),
+							where("email", "==", user.email)
+						)
+					);
+					if (userDoc.exists()) {
+						toast("You have been registered by your team leader.");
+						setIsTeamLeader(false);
+					} else {
+						toast("Please complete your registration first.");
+						router.push("/registration");
 					}
 				}
 			} catch (error) {
@@ -142,13 +158,20 @@ export default function TeamDetails() {
 						</p>
 					</div>
 
-					<button
-						onClick={handleUpdateClick}
-						className="w-full bg-deeppink hover:bg-pink text-white px-4 py-2 rounded-md hover:bg-darkpink transition-colors duration-200 flex items-center justify-center"
-					>
-						<Edit className="mr-2" />
-						Update Team Details
-					</button>
+					{isTeamLeader ? (
+						<button
+							onClick={handleUpdateClick}
+							className="w-full bg-deeppink hover:bg-pink text-white px-4 py-2 rounded-md hover:bg-darkpink transition-colors duration-200 flex items-center justify-center"
+						>
+							<Edit className="mr-2" />
+							Update Team Details
+						</button>
+					) : (
+						<p className="text-pink">
+							You are not the team leader. Only team leader can
+							update the team details.
+						</p>
+					)}
 
 					<div className="space-y-4">
 						<h2 className="text-xl font-semibold text-green flex items-center">
@@ -232,33 +255,34 @@ export default function TeamDetails() {
 					</div>
 
 					<div className="space-y-4">
-  <h2 className="text-xl font-semibold text-green flex items-center">
-    <Code className="mr-2" />
-    Tech Stack
-  </h2>
-  <div className="flex flex-wrap gap-2">
-    {teamData.techStack
-      .filter(tech => tech !== 'Other')
-      .map((tech, index) => (
-        <span
-          key={index}
-          className="bg-green/20 text-green px-3 py-1 rounded-full text-sm"
-        >
-          {tech}
-        </span>
-    ))}
-    {teamData.otherTechStack && teamData.otherTechStack
-      .split(',')
-      .map((tech, index) => (
-        <span
-          key={`other-${index}`}
-          className="bg-green/20 text-green px-3 py-1 rounded-full text-sm"
-        >
-          {tech.trim()}
-        </span>
-    ))}
-  </div>
-</div>
+						<h2 className="text-xl font-semibold text-green flex items-center">
+							<Code className="mr-2" />
+							Tech Stack
+						</h2>
+						<div className="flex flex-wrap gap-2">
+							{teamData.techStack
+								.filter((tech) => tech !== "Other")
+								.map((tech, index) => (
+									<span
+										key={index}
+										className="bg-green/20 text-green px-3 py-1 rounded-full text-sm"
+									>
+										{tech}
+									</span>
+								))}
+							{teamData.otherTechStack &&
+								teamData.otherTechStack
+									.split(",")
+									.map((tech, index) => (
+										<span
+											key={`other-${index}`}
+											className="bg-green/20 text-green px-3 py-1 rounded-full text-sm"
+										>
+											{tech.trim()}
+										</span>
+									))}
+						</div>
+					</div>
 				</motion.div>
 			</div>
 		</div>

@@ -3,7 +3,15 @@
 import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { onAuthStateChanged } from "firebase/auth";
-import { getFirestore, doc, getDoc } from "firebase/firestore";
+import {
+	getFirestore,
+	doc,
+	getDoc,
+	query,
+	collection,
+	where,
+	getDocs,
+} from "firebase/firestore";
 import { auth } from "@/app/firebase";
 import { toast } from "react-hot-toast";
 import "./styles/registration.css";
@@ -27,6 +35,10 @@ export default function RegisterPageLayout({ children }) {
 						router.replace("/verifyemail");
 					}
 				} else {
+					if (pathname === "/verifyemail") {
+						toast("Email verified successfully.", { icon: "📧" });
+						router.replace("/registration");
+					}
 					// User is logged in
 					const userDocRef = doc(db, "teams", user.uid);
 					const userDocSnap = await getDoc(userDocRef);
@@ -48,21 +60,29 @@ export default function RegisterPageLayout({ children }) {
 						}
 					} else {
 						// Document doesn't exist, redirect to registration
-						if (pathname === "/login" || pathname === "/register") {
+						const participantDoc = await getDocs(
+							query(
+								collection(db, "participants"),
+								where("email", "==", user.email)
+							)
+						);
+						if (!participantDoc.empty) {
+							toast(
+								"You have been registered by your team leader.",
+								"📝"
+							);
+							router.replace("/teamdetails");
+						} else if (pathname !== "/registration") {
 							toast("Please complete your registration.", {
 								icon: "📝",
 							});
-							router.replace("/registration");
-						} else if (pathname !== "/registration") {
 							router.replace("/registration");
 						}
 					}
 				}
 			} else {
 				// User is not logged in
-				if (pathname === "/registration") {
-					router.replace("/register");
-				} else if (pathname !== "/register" && pathname !== "/login") {
+				if (pathname !== "/register" && pathname !== "/login") {
 					toast("Please signup or login.", { icon: "🔏" });
 					router.replace("/register");
 				}
