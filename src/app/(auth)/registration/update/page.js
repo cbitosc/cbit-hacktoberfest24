@@ -26,29 +26,29 @@ const useExpandedIndex = () => {
 };
 
 const ConfirmationDialog = ({ isOpen, onClose, onConfirm, message }) => {
-    if (!isOpen) return null;
+	if (!isOpen) return null;
   
-    return (
-      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-        <div className="bg-darkgrey border border-green rounded-lg p-6 max-w-sm w-full">
-          <h2 className="text-white text-lg font-semibold mb-4">{message}</h2>
-          <div className="flex justify-end space-x-4">
-            <button
-              onClick={onClose}
-              className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 transition-colors"
-            >
-              Cancel
-            </button>
-            <button
-              onClick={onConfirm}
-              className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition-colors"
-            >
-              Confirm
-            </button>
-          </div>
-        </div>
-      </div>
-    );
+	return (
+	  <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+		<div className="bg-darkgrey border border-green rounded-lg p-6 max-w-sm w-full">
+		  <h2 className="text-white text-lg font-semibold mb-4">{message}</h2>
+		  <div className="flex justify-end space-x-4">
+			<button
+			  onClick={onClose}
+			  className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 transition-colors"
+			>
+			  Cancel
+			</button>
+			<button
+			  onClick={onConfirm}
+			  className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition-colors"
+			>
+			  Confirm
+			</button>
+		  </div>
+		</div>
+	  </div>
+	);
   };
 
 export default function TeamUpdateForm() {
@@ -85,161 +85,80 @@ export default function TeamUpdateForm() {
 
   const validateForm = (data) => {
     const errors = [];
-
+  
     if (data.teamName.trim().length < 2) {
       errors.push("Team name must be at least 2 characters");
     }
-
+  
     if (data.techStack.length === 0) {
       errors.push("Please select at least one tech stack");
     }
-
+  
     if (data.participants.length === 0) {
       errors.push("At least one participant is required");
     }
-
+  
     if (data.participants.length > 5) {
       errors.push("Maximum 5 participants allowed");
     }
-
+  
     if (data.techStack.includes("Other") && data.otherTechStack.trim().length < 2) {
       errors.push("Please specify other tech stack (at least 2 characters)");
     }
-
+  
     data.participants.forEach((participant, index) => {
       if (participant.name.trim().length < 2) {
         errors.push(`Participant ${index + 1}: Name must be at least 2 characters`);
       }
-
-      if (!/^\d{10}$/.test(participant.phone.trim())) {
+  
+      const trimmedPhone = participant.phone.replace(/\s/g, '');
+      if (!/^\d{10}$/.test(trimmedPhone)) {
         errors.push(`Participant ${index + 1}: Phone number must be 10 digits`);
       }
-
-      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(participant.email.trim())) {
+  
+      const trimmedEmail = participant.email.trim();
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail)) {
         errors.push(`Participant ${index + 1}: Invalid email address`);
       }
-
-      if (data.participants.filter((p) => p.email.trim() === participant.email.trim()).length > 1) {
+  
+      if (data.participants.filter((p) => p.email.trim() === trimmedEmail).length > 1) {
         errors.push(`Participant ${index + 1}: Duplicate email address`);
       }
-
+  
       if (!participant.gender) {
         errors.push(`Participant ${index + 1}: Please select gender`);
       }
-
+  
       if (!participant.rollNo.trim()) {
         errors.push(`Participant ${index + 1}: Roll number is required`);
       }
-
+  
       if (!participant.institution) {
         errors.push(`Participant ${index + 1}: Please select college/university`);
       }
-
+  
       if (participant.institution === "other" && !participant.otherInstitution.trim()) {
         errors.push(`Participant ${index + 1}: Please specify other institution`);
       }
-
+  
       if (!participant.yearOfStudy) {
         errors.push(`Participant ${index + 1}: Please enter year of study`);
       }
-
+  
       if (!participant.branch) {
         errors.push(`Participant ${index + 1}: Please select branch`);
       }
-
+  
       if (participant.branch === "other" && !participant.otherBranch.trim()) {
         errors.push(`Participant ${index + 1}: Please specify other branch`);
       }
-
+  
       if (!participant.section.trim()) {
         errors.push(`Participant ${index + 1}: Please select section`);
       }
     });
-
+  
     return errors;
-  };
-
-  const onSubmit = async (data) => {
-    setIsSubmitting(true);
-    const trimmedData = {
-      ...data,
-      teamName: data.teamName.trim(),
-      otherTechStack: data.otherTechStack.trim(),
-      participants: data.participants.map(participant => ({
-        ...participant,
-        name: participant.name.trim(),
-        phone: participant.phone.trim(),
-        email: participant.email.trim(),
-        rollNo: participant.rollNo.trim(),
-        otherInstitution: participant.otherInstitution?.trim(),
-        otherYearOfStudy: participant.otherYearOfStudy?.trim(),
-        otherBranch: participant.otherBranch?.trim(),
-        section: participant.section.trim()
-      }))
-    };
-    
-    const validationErrors = validateForm(trimmedData);
-    if (validationErrors.length > 0) {
-      validationErrors.forEach((error) => toast.error(error));
-      setIsSubmitting(false);
-      return;
-    }
-
-    try {
-      if (!user) {
-        toast.error("You must be logged in to update a team");
-        return;
-      }
-
-      const teamDocRef = doc(db, "teams", user.uid);
-      await updateDoc(teamDocRef, {
-        ...trimmedData,
-        totalParticipants: trimmedData.participants.length,
-        updatedAt: new Date(),
-      });
-
-      // Update participants in the separate collection
-      const participantsCollection = collection(db, "participants");
-      const teamParticipantsQuery = query(participantsCollection, where("teamId", "==", user.uid));
-      const existingParticipants = await getDocs(teamParticipantsQuery);
-
-      // Delete removed participants
-      const deletions = existingParticipants.docs.filter(
-        doc => !trimmedData.participants.find(p => p.email === doc.data().email)
-      ).map(doc => deleteDoc(doc.ref));
-
-      // Update or add participants
-      const upserts = trimmedData.participants.map(async (participant) => {
-        const participantQuery = query(participantsCollection, 
-          where("teamId", "==", user.uid),
-          where("email", "==", participant.email)
-        );
-        const participantDocs = await getDocs(participantQuery);
-        
-        if (participantDocs.empty) {
-          return addDoc(participantsCollection, {
-            ...participant,
-            teamId: user.uid,
-            teamName: trimmedData.teamName,
-          });
-        } else {
-          return updateDoc(participantDocs.docs[0].ref, {
-            ...participant,
-            teamName: trimmedData.teamName,
-          });
-        }
-      });
-
-      await Promise.all([...deletions, ...upserts]);
-
-      toast.success("Team updated successfully!");
-      router.push("/teamdetails");
-    } catch (error) {
-      console.error("Error updating team:", error);
-      toast.error("Update failed. Please try again.");
-    } finally {
-      setIsSubmitting(false);
-    }
   };
 
   useEffect(() => {
@@ -265,7 +184,115 @@ export default function TeamUpdateForm() {
     fetchTeamData();
   }, [user, reset, router]);
 
-
+  const onSubmit = async (data) => {
+    setIsSubmitting(true);
+  
+    // Helper function to deeply clean and trim an object
+    const cleanAndTrimData = (obj) => {
+      if (Array.isArray(obj)) {
+        return obj.map(cleanAndTrimData).filter(v => v != null);
+      } else if (typeof obj === 'object' && obj !== null) {
+        return Object.fromEntries(
+          Object.entries(obj)
+            .map(([k, v]) => [k, cleanAndTrimData(v)])
+            .filter(([_, v]) => v != null && v !== '')
+        );
+      } else if (typeof obj === 'string') {
+        return obj.trim();
+      }
+      return obj;
+    };
+  
+    // Clean and trim the data
+    const cleanedData = cleanAndTrimData(data);
+  
+    const validationErrors = validateForm(cleanedData);
+    if (validationErrors.length > 0) {
+      validationErrors.forEach((error) => toast.error(error));
+      setIsSubmitting(false);
+      return;
+    }
+  
+    try {
+      if (!user) {
+        toast.error("You must be logged in to update a team");
+        return;
+      }
+  
+      console.log('Clean data:', JSON.stringify(cleanedData, null, 2));
+  
+      // Prepare the update object
+      const updateObject = {
+        teamName: cleanedData.teamName || '',
+        techStack: cleanedData.techStack || [],
+        otherTechStack: cleanedData.otherTechStack || '',
+        participants: cleanedData.participants || [],
+        totalParticipants: (cleanedData.participants || []).length,
+        updatedAt: new Date(),
+      };
+  
+      console.log('Update object:', JSON.stringify(updateObject, null, 2));
+  
+      // Check for any remaining undefined values
+      const checkUndefined = (obj, path = '') => {
+        Object.entries(obj).forEach(([key, value]) => {
+          const newPath = path ? `${path}.${key}` : key;
+          if (value === undefined) {
+            console.error(`Undefined value found at ${newPath}`);
+          } else if (typeof value === 'object' && value !== null) {
+            checkUndefined(value, newPath);
+          }
+        });
+      };
+  
+      checkUndefined(updateObject);
+  
+      const teamDocRef = doc(db, "teams", user.uid);
+      await updateDoc(teamDocRef, updateObject);
+  
+      // Update participants in the separate collection
+      const participantsCollection = collection(db, "participants");
+      const teamParticipantsQuery = query(participantsCollection, where("teamId", "==", user.uid));
+      const existingParticipants = await getDocs(teamParticipantsQuery);
+  
+      // Delete removed participants
+      const deletions = existingParticipants.docs.filter(
+        doc => !cleanedData.participants.find(p => p.email === doc.data().email)
+      ).map(doc => deleteDoc(doc.ref));
+  
+      // Update or add participants
+      const upserts = cleanedData.participants.map(async (participant) => {
+        const participantQuery = query(participantsCollection, 
+          where("teamId", "==", user.uid),
+          where("email", "==", participant.email)
+        );
+        const participantDocs = await getDocs(participantQuery);
+        
+        if (participantDocs.empty) {
+          return addDoc(participantsCollection, {
+            ...participant,
+            teamId: user.uid,
+            teamName: cleanedData.teamName,
+          });
+        } else {
+          return updateDoc(participantDocs.docs[0].ref, {
+            ...participant,
+            teamName: cleanedData.teamName,
+          });
+        }
+      });
+  
+      await Promise.all([...deletions, ...upserts]);
+  
+      toast.success("Team updated successfully!");
+      router.push("/teamdetails");
+    } catch (error) {
+      console.error("Error updating team:", error);
+      toast.error("Update failed. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   const addParticipant = () => {
     if (fields.length < 5) {
@@ -285,7 +312,6 @@ export default function TeamUpdateForm() {
       setExpandedIndex(fields.length);
     }
   };
-
   const removeParticipant = (index) => {
     if (fields.length > 1) {
       remove(index);
@@ -316,7 +342,6 @@ export default function TeamUpdateForm() {
     "UI/UX",
     "Machine Learning and Artificial Intelligence",
     "Other",
-    "None"
   ];
 
   const ParticipantCard = React.memo(({ index }) => {
@@ -465,7 +490,7 @@ export default function TeamUpdateForm() {
                 placeholder="Section"
                 className="w-full px-3 py-2 border border-green bg-transparent text-white rounded-md focus:outline-none focus:ring-2 focus:ring-pink"
               />
-              {index > 0 && (
+             {index > 0 && (
                 <button
                   type="button"
                   onClick={() => handleRemoveClick(index)}
@@ -483,7 +508,7 @@ export default function TeamUpdateForm() {
   });
 
   if (loading || !initialData) {
-    return <div className="flex justify-center items-center h-screen bg-darkgrey background-gradient"><span className="loader"></span></div>;
+    return <div className="flex justify-center items-center h-screen bg-darkgrey backgroud-gradient"><span className="loader"></span></div>;
   }
 
   return (
@@ -526,7 +551,7 @@ export default function TeamUpdateForm() {
 
           <div className="mb-6">
             <label className="text-white block mb-2">
-            Which of the following tech stacks are you and your teammates familiar with?
+              Team Tech Stack
             </label>
             <AnimatePresence>
               <motion.div className="p-4 border border-green rounded-md">
@@ -543,23 +568,11 @@ export default function TeamUpdateForm() {
                           <input
                             type="checkbox"
                             value={stack}
-                            checked={field.value.includes(stack)}
-                            onChange={(e) => {
-                            let updatedValue;
-                            if (stack === "None") {
-                              updatedValue = e.target.checked ? ["None"] : [];
-                            } else {
-                              updatedValue = e.target.checked
-                              ? [...field.value.filter(item => item !== "None"), stack]
-                              : field.value.filter(item => item !== stack);
-                            }
-                            field.onChange(updatedValue);
-                          }}
-                          disabled={stack !== "None" && field.value.includes("None")}
-                          className="form-checkbox"
-                        />
-                        <span className="text-white">{stack}</span>
-                      </label>
+                            {...register("techStack")}
+                            className="form-checkbox"
+                          />
+                          <span className="text-white">{stack}</span>
+                        </label>
                       ))}
                       {field.value.includes("Other") && (
                         <input

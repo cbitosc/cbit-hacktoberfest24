@@ -232,33 +232,33 @@ export default function TeamDetails() {
 					</div>
 
 					<div className="space-y-4">
-						<h2 className="text-xl font-semibold text-green flex items-center">
-							<Code className="mr-2" />
-							Tech Stack
-						</h2>
-						<div className="flex flex-wrap gap-2">
-							{teamData.techStack.map((tech, index) => (
-								<span
-									key={index}
-									className="bg-green/20 text-green px-3 py-1 rounded-full text-sm"
-								>
-									{tech}
-								</span>
-							))}
-							{teamData.taechStack?.includes("Other") &&
-								teamData.otherTechStack &&
-								new String(teamData.otherTechStack)
-									.split(",")
-									.map((otherStack) => (
-										<span
-											key={otherStack}
-											className="bg-green/20 text-green px-3 py-1 rounded-full text-sm"
-										>
-											{otherStack}
-										</span>
-									))}
-						</div>
-					</div>
+  <h2 className="text-xl font-semibold text-green flex items-center">
+    <Code className="mr-2" />
+    Tech Stack
+  </h2>
+  <div className="flex flex-wrap gap-2">
+    {teamData.techStack
+      .filter(tech => tech !== 'Other')
+      .map((tech, index) => (
+        <span
+          key={index}
+          className="bg-green/20 text-green px-3 py-1 rounded-full text-sm"
+        >
+          {tech}
+        </span>
+    ))}
+    {teamData.otherTechStack && teamData.otherTechStack
+      .split(',')
+      .map((tech, index) => (
+        <span
+          key={`other-${index}`}
+          className="bg-green/20 text-green px-3 py-1 rounded-full text-sm"
+        >
+          {tech.trim()}
+        </span>
+    ))}
+  </div>
+</div>
 				</motion.div>
 			</div>
 		</div>
