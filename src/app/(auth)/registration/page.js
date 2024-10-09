@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm, useFieldArray, Controller } from "react-hook-form";
 import { ChevronDown, ChevronUp, Plus, Trash2 } from "lucide-react";
 import TypingEffect2 from "@/app/TypingEffect2";
@@ -59,10 +59,16 @@ export default function RegisterForm() {
 	const { expandedIndex, setExpandedIndex } = useExpandedIndex();
 	const [user, loading] = useAuthState(auth);
 	const router = useRouter();
-	const { setIsRegistered } = useAuth();
+	const { setIsRegistered, isRegistered } = useAuth();
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [dialogOpen, setDialogOpen] = useState(false);
 	const [participantToRemove, setParticipantToRemove] = useState(null);
+
+	useEffect(() => {
+		if (isRegistered) {
+			router.push("/teamdetails");
+		}
+	}, [isRegistered, router]);
 
 	const {
 		register,
@@ -317,6 +323,7 @@ export default function RegisterForm() {
 				teamLeaderId: user.uid,
 				participants: enrichedParticipants,
 				totalParticipants: enrichedParticipants.length,
+				editCount: 0,
 			};
 			await setDoc(teamDocRef, teamData);
 

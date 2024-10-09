@@ -71,16 +71,26 @@ export default function TeamDetails() {
 						localStorage.setItem("hasViewedTeamDetails", "true");
 					}
 				} else {
-					// see if the user has registered
-					const userDoc = await getDoc(
+					// see if the user has been registered in another team
+					const userDoc = await getDocs(
 						query(
 							collection(db, "participants"),
 							where("email", "==", user.email)
 						)
 					);
-					if (userDoc.exists()) {
-						toast("You have been registered by your team leader.");
+					if (!userDoc.empty) {
+						console.log("User is not team leader", user, userDoc);
+						toast("You have been registered by your team leader.", {
+							icon: "🙌",
+						});
 						setIsTeamLeader(false);
+						// fetch team data
+						userDoc.forEach(async (participant) => {
+							const teamId = participant.data().teamId;
+							const teamDocRef = doc(db, "teams", teamId);
+							const teamDoc = await getDoc(teamDocRef);
+							setTeamData(teamDoc.data());
+						});
 					} else {
 						toast("Please complete your registration first.");
 						router.push("/registration");
@@ -95,7 +105,7 @@ export default function TeamDetails() {
 		};
 
 		fetchTeamData();
-	}, [user, router]);
+	}, [user]);
 
 	const handleUpdateClick = () => {
 		router.push("/registration/update");
@@ -155,21 +165,61 @@ export default function TeamDetails() {
 						<p className="text-pink mt-2">
 							Registered on:{" "}
 							{teamData.createdAt.toDate().toLocaleDateString()}
+							{teamData.updatedAt && (
+								<span className="text-pink/60">
+									{" "}
+									(Updated on{" "}
+									{teamData.updatedAt
+										.toDate()
+										.toLocaleDateString()}
+									)
+								</span>
+							)}
 						</p>
 					</div>
 
 					{isTeamLeader ? (
-						<button
-							onClick={handleUpdateClick}
-							className="w-full bg-deeppink hover:bg-pink text-white px-4 py-2 rounded-md hover:bg-darkpink transition-colors duration-200 flex items-center justify-center"
-						>
-							<Edit className="mr-2" />
-							Update Team Details
-						</button>
+						teamData.editCount && teamData.editCount >= 3 ? (
+							<p className="text-pink">
+								You have reached the maximum number of updates.
+								If you need to make any changes, please contact{" "}
+								<span className="text-white">
+									Mohammed Imaduddin{" "}
+								</span>
+								<a
+									href="tel:9052812005"
+									className="text-green hover:text-pink transition-colors"
+								>
+									+919052812005
+								</a>
+							</p>
+						) : (
+							<>
+								<button
+									onClick={handleUpdateClick}
+									className="w-full bg-deeppink hover:bg-pink text-white px-4 py-2 rounded-md hover:bg-darkpink transition-colors duration-200 flex items-center justify-center"
+								>
+									<Edit className="mr-2" />
+									Update Team Details
+								</button>
+								<p className="text-pink">
+									(You can update upto{" "}
+									{teamData.editCount
+										? 3 - teamData.editCount
+										: "3"}{" "}
+									more{" "}
+									{teamData.editCount === 2
+										? "time"
+										: "times"}
+									)
+								</p>
+							</>
+						)
 					) : (
-						<p className="text-pink">
-							You are not the team leader. Only team leader can
-							update the team details.
+						<p className="text-pink/60">
+							(Only team leader can update the team details. If
+							you need to make any changes, please contact your
+							team leader.)
 						</p>
 					)}
 

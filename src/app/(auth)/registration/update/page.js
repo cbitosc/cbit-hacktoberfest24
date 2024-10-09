@@ -69,6 +69,17 @@ export default function TeamUpdateForm() {
 				const teamDoc = await getDoc(teamDocRef);
 				if (teamDoc.exists()) {
 					const data = teamDoc.data();
+					if (!data) {
+						router.push("/registration");
+						return;
+					}
+					if (data.editCount >= 3) {
+						toast.error(
+							"You have reached the maximum number of edits allowed."
+						);
+						router.push("/teamdetails");
+						return;
+					}
 					setInitialData(data);
 					reset({
 						teamName: data.teamName,
@@ -256,6 +267,7 @@ export default function TeamUpdateForm() {
 				otherTechStack: cleanedData.otherTechStack || "",
 				participants: cleanedData.participants || [],
 				totalParticipants: (cleanedData.participants || []).length,
+				editCount: (initialData.editCount || 0) + 1,
 				updatedAt: new Date(),
 			};
 
@@ -460,6 +472,15 @@ export default function TeamUpdateForm() {
 									</div>
 								)}
 							/>
+                            <div className="relative">
+								<input
+									{...register(
+										`participants.${index}.rollNo`
+									)}
+									placeholder="Roll Number"
+									className="w-full px-3 py-2 border border-green bg-transparent text-white rounded-md focus:outline-none focus:ring-2 focus:ring-pink"
+								/>
+							</div>
 							<Controller
 								name={`participants.${index}.institution`}
 								control={control}
@@ -469,11 +490,23 @@ export default function TeamUpdateForm() {
 											{...field}
 											className="w-full px-3 py-2 border border-green bg-transparent text-white rounded-md focus:outline-none focus:ring-2 focus:ring-pink"
 										>
-											<option value="" disabled>
+											<option
+												className="text-darkgrey hover:text-white"
+												value=""
+												disabled
+											>
 												Select College/University
 											</option>
-											<option value="CBIT">CBIT</option>
-											<option value="other">
+											<option
+												className="text-darkgrey hover:text-white"
+												value="CBIT"
+											>
+												CBIT
+											</option>
+											<option
+												className="text-darkgrey hover:text-white"
+												value="other"
+											>
 												Other (Specify)
 											</option>
 										</select>
@@ -498,14 +531,43 @@ export default function TeamUpdateForm() {
 											{...field}
 											className="w-full px-3 py-2 border border-green bg-transparent text-white rounded-md focus:outline-none focus:ring-2 focus:ring-pink"
 										>
-											<option value="" disabled>
+											<option
+												className="text-darkgrey hover:text-white"
+												value=""
+												disabled
+											>
 												Select Year of Study
 											</option>
-											<option value="1">1</option>
-											<option value="2">2</option>
-											<option value="3">3</option>
-											<option value="4">4</option>
-											<option value="other">Other</option>
+											<option
+												className="text-darkgrey hover:text-white"
+												value="1"
+											>
+												1
+											</option>
+											<option
+												className="text-darkgrey hover:text-white"
+												value="2"
+											>
+												2
+											</option>
+											<option
+												className="text-darkgrey hover:text-white"
+												value="3"
+											>
+												3
+											</option>
+											<option
+												className="text-darkgrey hover:text-white"
+												value="4"
+											>
+												4
+											</option>
+											<option
+												className="text-darkgrey hover:text-white"
+												value="other"
+											>
+												Other
+											</option>
 										</select>
 										{field.value === "other" && (
 											<input
@@ -528,30 +590,89 @@ export default function TeamUpdateForm() {
 											{...field}
 											className="w-full px-3 py-2 border border-green bg-transparent text-white rounded-md focus:outline-none focus:ring-2 focus:ring-pink"
 										>
-											<option value="" disabled>
+											<option
+												className="text-darkgrey hover:text-white"
+												value=""
+												disabled
+											>
 												Select Branch
 											</option>
-											<option value="CSE">CSE</option>
-											<option value="CSE AI & ML">
+											<option
+												className="text-darkgrey hover:text-white"
+												value="CSE"
+											>
+												CSE
+											</option>
+											<option
+												className="text-darkgrey hover:text-white"
+												value="CSE AI & ML"
+											>
 												CSE AI & ML
 											</option>
-											<option value="CET">CET</option>
-											<option value="IT">IT</option>
-											<option value="AIDS">AI&DS</option>
-											<option value="AIML">AIML</option>
-											<option value="CIVIL">CIVIL</option>
-											<option value="MECHANICAL">
+											<option
+												className="text-darkgrey hover:text-white"
+												value="CET"
+											>
+												CET
+											</option>
+											<option
+												className="text-darkgrey hover:text-white"
+												value="IT"
+											>
+												IT
+											</option>
+											<option
+												className="text-darkgrey hover:text-white"
+												value="AIDS"
+											>
+												AI&DS
+											</option>
+											<option
+												className="text-darkgrey hover:text-white"
+												value="AIML"
+											>
+												AIML
+											</option>
+											<option
+												className="text-darkgrey hover:text-white"
+												value="CIVIL"
+											>
+												CIVIL
+											</option>
+											<option
+												className="text-darkgrey hover:text-white"
+												value="MECHANICAL"
+											>
 												MECHANICAL
 											</option>
-											<option value="ECE">ECE</option>
-											<option value="EEE">EEE</option>
-											<option value="CHEMICAL">
+											<option
+												className="text-darkgrey hover:text-white"
+												value="ECE"
+											>
+												ECE
+											</option>
+											<option
+												className="text-darkgrey hover:text-white"
+												value="EEE"
+											>
+												EEE
+											</option>
+											<option
+												className="text-darkgrey hover:text-white"
+												value="CHEMICAL"
+											>
 												CHEMICAL
 											</option>
-											<option value="BIOTECH">
+											<option
+												className="text-darkgrey hover:text-white"
+												value="BIOTECH"
+											>
 												BIOTECH
 											</option>
-											<option value="other">
+											<option
+												className="text-darkgrey hover:text-white"
+												value="other"
+											>
 												Other (Specify)
 											</option>
 										</select>

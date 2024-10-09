@@ -1,7 +1,14 @@
 "use client";
 import { auth, db } from "@/app/firebase";
 import { onAuthStateChanged, signOut } from "firebase/auth";
-import { getDoc, doc } from "firebase/firestore";
+import {
+	getDoc,
+	doc,
+	query,
+	getDocs,
+	collection,
+	where,
+} from "firebase/firestore";
 import { useState, useEffect, useContext, createContext } from "react";
 
 const AuthContext = createContext({
@@ -10,6 +17,7 @@ const AuthContext = createContext({
 	logout: () => {},
 	isRegistered: false,
 	setIsRegistered: () => {},
+	isTeamLeader: false,
 });
 
 export const useAuth = () => {
@@ -20,6 +28,7 @@ export const AuthProvider = ({ children }) => {
 	const [user, setUser] = useState(null);
 	const [isRegistered, setIsRegistered] = useState(false);
 	const [loading, setLoading] = useState(true);
+	const [isTeamLeader, setIsTeamLeader] = useState(false);
 
 	useEffect(() => {
 		const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -37,10 +46,25 @@ export const AuthProvider = ({ children }) => {
 				const userDocSnap = await getDoc(userDocRef);
 
 				if (userDocSnap.exists()) {
+					setIsTeamLeader(true);
 					setIsRegistered(true);
+				} else {
+					const participantQuery = query(
+						collection(db, "participants"),
+						where("email", "==", user.email)
+					);
+					const participantSnapshot = await getDocs(participantQuery);
+					if (participantSnapshot.empty) {
+						setIsRegistered(false);
+						setIsTeamLeader(true);
+					} else {
+						setIsRegistered(true);
+						setIsTeamLeader(false);
+					}
 				}
 			} else {
 				setIsRegistered(false);
+				setIsTeamLeader(false);
 			}
 		};
 		checkIfRegistered();
@@ -52,7 +76,14 @@ export const AuthProvider = ({ children }) => {
 
 	return (
 		<AuthContext.Provider
-			value={{ user, loading, logout, isRegistered, setIsRegistered }}
+			value={{
+				user,
+				loading,
+				logout,
+				isRegistered,
+				setIsRegistered,
+				isTeamLeader,
+			}}
 		>
 			{children}
 		</AuthContext.Provider>

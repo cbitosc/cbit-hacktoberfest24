@@ -59,18 +59,15 @@ export default function RegisterPageLayout({ children }) {
 							router.replace("/teamdetails");
 						}
 					} else {
-						// Document doesn't exist, redirect to registration
+						// Find if user is a participant
 						const participantDoc = await getDocs(
 							query(
 								collection(db, "participants"),
 								where("email", "==", user.email)
 							)
 						);
+						// Check if user is a participant (not a team leader)
 						if (!participantDoc.empty) {
-							toast(
-								"You have been registered by your team leader.",
-								"📝"
-							);
 							router.replace("/teamdetails");
 						} else if (pathname !== "/registration") {
 							toast("Please complete your registration.", {
