@@ -9,6 +9,7 @@ const TechStackSelection = React.memo(() => {
     "Backend Development",
     "UI/UX",
     "Machine Learning and Artificial Intelligence",
+    "None",
     "Other",
   ];
 

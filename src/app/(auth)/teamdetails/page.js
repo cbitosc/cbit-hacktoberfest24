@@ -12,7 +12,7 @@ import {
 	getDocs,
 } from "firebase/firestore";
 import { motion } from "framer-motion";
-import { User, Code, Users } from "lucide-react";
+import { User, Code, Users, Edit } from "lucide-react";
 import "../styles/registration.css";
 import { useRouter } from "next/navigation";
 import { toast } from "react-hot-toast";
@@ -81,6 +81,10 @@ export default function TeamDetails() {
 		fetchTeamData();
 	}, [user, router]);
 
+	const handleUpdateClick = () => {
+		router.push("/registration/update");
+	};
+
 	if (loading || isLoading) {
 		return (
 			<section className="bg-darkgrey background-gradient video-background h-screen flex flex-col items-center justify-center">
@@ -137,6 +141,14 @@ export default function TeamDetails() {
 							{teamData.createdAt.toDate().toLocaleDateString()}
 						</p>
 					</div>
+
+					<button
+						onClick={handleUpdateClick}
+						className="w-full bg-deeppink hover:bg-pink text-white px-4 py-2 rounded-md hover:bg-darkpink transition-colors duration-200 flex items-center justify-center"
+					>
+						<Edit className="mr-2" />
+						Update Team Details
+					</button>
 
 					<div className="space-y-4">
 						<h2 className="text-xl font-semibold text-green flex items-center">
@@ -233,7 +245,8 @@ export default function TeamDetails() {
 									{tech}
 								</span>
 							))}
-							{teamData.otherTechStack &&
+							{teamData.taechStack?.includes("Other") &&
+								teamData.otherTechStack &&
 								new String(teamData.otherTechStack)
 									.split(",")
 									.map((otherStack) => (
