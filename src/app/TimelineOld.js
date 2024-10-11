@@ -102,14 +102,14 @@ export default function Timeline() {
 						<div></div>
 						<div></div>
 						<TimelineItem
-							date="9th October 2024"
+							date="10th October 2024"
 							title="Preptember Video 5"
 							content="This video covers the fundamentals of Machine Learning, a popular domain in hackathons, and how to effectively apply them to your projects."
 							icon={<FaLightbulb fontSize={12} />}
 							multiplier={1}
 						/>
 						<TimelineItem
-							date="11th October 2024"
+							date="12th October 2024"
 							title="Preptember Video 6"
 							content="In the last video of this series, we explain how to use databases and integrate all the parts of your project."
 							icon={<FaLightbulb fontSize={12} />}
