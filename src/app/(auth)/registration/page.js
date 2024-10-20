@@ -63,6 +63,8 @@ export default function RegisterForm() {
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [dialogOpen, setDialogOpen] = useState(false);
 	const [participantToRemove, setParticipantToRemove] = useState(null);
+	const [showMergeConfirmation, setShowMergeConfirmation] = useState(false);
+  	const [registrationData, setRegistrationData] = useState(null);
 
 	useEffect(() => {
 		if (isRegistered) {
@@ -251,105 +253,113 @@ export default function RegisterForm() {
 		return errors;
 	};
 
-	const onSubmit = async (data) => {
+	const handleMergeConfirmation = async (confirm) => {
+		setShowMergeConfirmation(false);
+		if (confirm) {
+		  await processRegistration(registrationData);
+		} else {
+		  setIsSubmitting(false);
+		}
+	  };
+	
+	  const processRegistration = async (data) => {
+		try {
+		  if (!user) {
+			toast.error("You must be logged in to register a team");
+			return;
+		  }
+	
+		  // Check for duplicate emails
+		  const duplicateEmails = await checkDuplicateEmails(data.participants);
+		  if (duplicateEmails.length > 0) {
+			duplicateEmails.forEach(({ index, email }) => {
+			  toast.error(`Participant ${index + 1}: ${email} is already registered for the hackathon`);
+			});
+			return;
+		  }
+	
+		  const enrichedParticipants = data.participants.map((participant, index) => ({
+			...participant,
+			isTeamLeader: index === 0,
+			createdAt: new Date(),
+			participantId: `participant_${index + 1}`,
+		  }));
+	
+		  const teamDocRef = doc(db, "teams", user.uid);
+		  const teamData = {
+			teamName: data.teamName,
+			techStack: data.techStack,
+			otherTechStack: data.otherTechStack,
+			createdAt: new Date(),
+			teamLeaderId: user.uid,
+			participants: enrichedParticipants,
+			totalParticipants: enrichedParticipants.length,
+			editCount: 0,
+			needsMerging: data.participants.length < 3
+		  };
+		  await setDoc(teamDocRef, teamData);
+	
+		  const participantsCollection = collection(db, "participants");
+		  const participantPromises = enrichedParticipants.map(async (participant) => {
+			return addDoc(participantsCollection, {
+			  ...participant,
+			  teamId: user.uid,
+			  teamName: data.teamName,
+			});
+		  });
+	
+		  await Promise.all(participantPromises);
+	
+		  toast.success("Registration successful!");
+		  setIsRegistered(true);
+		  router.push("/teamdetails");
+		} catch (error) {
+		  console.error("Error saving registration:", error);
+		  toast.error("Registration failed. Please try again.");
+		} finally {
+		  setIsSubmitting(false);
+		}
+	  };
+	
+	  const onSubmit = async (data) => {
 		setIsSubmitting(true);
 		const trimmedData = {
-			...data,
-			teamName: data.teamName.trim(),
-			otherTechStack: data.otherTechStack.trim(),
-			participants: data.participants.map((participant) => ({
-				...participant,
-				name: participant.name.trim(),
-				phone: participant.phone.trim(),
-				email: participant.email.trim(),
-				rollNo: participant.rollNo.trim(),
-				otherInstitution: participant.otherInstitution?.trim() || "",
-				otherYearOfStudy: participant.otherYearOfStudy?.trim() || "",
-				otherBranch: participant.otherBranch?.trim() || "",
-				section: participant.section.trim(),
-			})),
+		  ...data,
+		  teamName: data.teamName.trim(),
+		  otherTechStack: data.otherTechStack.trim(),
+		  participants: data.participants.map((participant) => ({
+			...participant,
+			name: participant.name.trim(),
+			phone: participant.phone.trim(),
+			email: participant.email.trim(),
+			rollNo: participant.rollNo.trim(),
+			otherInstitution: participant.otherInstitution?.trim() || "",
+			otherYearOfStudy: participant.otherYearOfStudy?.trim() || "",
+			otherBranch: participant.otherBranch?.trim() || "",
+			section: participant.section.trim(),
+		  })),
 		};
-
+	
 		const validationErrors = validateForm(trimmedData);
-
+	
 		if (validationErrors.length > 0) {
-			const fewErrors = validationErrors.slice(0, 3);
-			if (validationErrors.length > 3) {
-				toast.error(`And ${validationErrors.length - 3} more...`);
-			}
-			fewErrors.forEach((error) => toast.error(error));
-			setIsSubmitting(false);
-			return;
+		  const fewErrors = validationErrors.slice(0, 3);
+		  if (validationErrors.length > 3) {
+			toast.error(`And ${validationErrors.length - 3} more...`);
+		  }
+		  fewErrors.forEach((error) => toast.error(error));
+		  setIsSubmitting(false);
+		  return;
 		}
-
-		try {
-			if (!user) {
-				toast.error("You must be logged in to register a team");
-				setIsSubmitting(false);
-				return;
-			}
-
-			// Check for duplicate emails
-			const duplicateEmails = await checkDuplicateEmails(
-				trimmedData.participants
-			);
-			if (duplicateEmails.length > 0) {
-				duplicateEmails.forEach(({ index, email }) => {
-					toast.error(
-						`Participant ${
-							index + 1
-						}: ${email} is already registered for the hackathon`
-					);
-				});
-				setIsSubmitting(false);
-				return;
-			}
-
-			const enrichedParticipants = trimmedData.participants.map(
-				(participant, index) => ({
-					...participant,
-					isTeamLeader: index === 0,
-					createdAt: new Date(),
-					participantId: `participant_${index + 1}`,
-				})
-			);
-
-			const teamDocRef = doc(db, "teams", user.uid);
-			const teamData = {
-				teamName: trimmedData.teamName,
-				techStack: trimmedData.techStack,
-				otherTechStack: trimmedData.otherTechStack,
-				createdAt: new Date(),
-				teamLeaderId: user.uid,
-				participants: enrichedParticipants,
-				totalParticipants: enrichedParticipants.length,
-				editCount: 0,
-			};
-			await setDoc(teamDocRef, teamData);
-
-			const participantsCollection = collection(db, "participants");
-			const participantPromises = enrichedParticipants.map(
-				async (participant) => {
-					return addDoc(participantsCollection, {
-						...participant,
-						teamId: user.uid,
-						teamName: trimmedData.teamName,
-					});
-				}
-			);
-
-			await Promise.all(participantPromises);
-
-			toast.success("Registration successful!");
-			setIsRegistered(true);
-			router.push("/teamdetails");
-		} catch (error) {
-			console.error("Error saving registration:", error);
-			toast.error("Registration failed. Please try again.");
-		} finally {
-			setIsSubmitting(false);
+	
+		// Show notice for solo or duo teams
+		if (trimmedData.participants.length < 3) {
+		  setRegistrationData(trimmedData);
+		  setShowMergeConfirmation(true);
+		} else {
+		  await processRegistration(trimmedData);
 		}
-	};
+	  };
 
 	const addParticipant = () => {
 		if (fields.length < 5) {
@@ -951,6 +961,30 @@ export default function RegisterForm() {
 				onConfirm={handleConfirmRemove}
 				message="Are you sure you want to remove this participant? This action cannot be undone."
 			/>
-		</div>
-	);
-}
+			{showMergeConfirmation && (
+        <div className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50">
+          <div className="glassomorphism text-white p-6 rounded-lg shadow-lg max-w-md w-full">
+            <h2 className="text-xl font-bold mb-4 text-pink">Team Size Notice</h2>
+            <p className="mb-6">
+              Your team currently has less than 3 members. You will be merged with another team to meet the minimum team size requirement of 3 members. Do you want to continue?
+            </p>
+            <div className="flex justify-end space-x-4">
+              <button 
+                onClick={() => handleMergeConfirmation(false)}
+                className="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300"
+              >
+                Cancel
+              </button>
+              <button 
+                onClick={() => handleMergeConfirmation(true)}
+                className="px-4 py-2 bg-green text-white rounded hover:bg-blue-600"
+              >
+                Continue
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
