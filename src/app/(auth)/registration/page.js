@@ -971,13 +971,13 @@ export default function RegisterForm() {
             <div className="flex justify-end space-x-4">
               <button 
                 onClick={() => handleMergeConfirmation(false)}
-                className="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300"
+                className="px-4 py-2 bg-green text-white rounded hover:bg-darkgreen "
               >
-                Cancel
+                Add More Participants
               </button>
               <button 
                 onClick={() => handleMergeConfirmation(true)}
-                className="px-4 py-2 bg-green text-white rounded hover:bg-blue-600"
+                className="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300"
               >
                 Continue
               </button>
