@@ -31,12 +31,9 @@ export default function Timeline() {
 		offset: ["start start", "end end"],
 	});
 
-	const timelineProgress = useTransform(
-		scrollYProgress,
-		[0, 1],
-		[0.1, 0.92],
-		{ clamp: true }
-	);
+	const timelineProgress = useTransform(scrollYProgress, [0, 1], [0.1, 0.8], {
+		clamp: true,
+	});
 
 	const isMobile = width && width <= 1024;
 	return (
@@ -51,7 +48,7 @@ export default function Timeline() {
 				<StackedTextDark text="Timeline" fontSize="72px" />
 			</div>
 			<div
-				className={cn("w-full py-8", "flex flex-col-reverse gap-y-12")}
+				className={cn("w-full py-8 ok", "flex flex-col-reverse gap-y-12")}
 				ref={listRef}
 			>
 				<div className="lg:px-20 lg:flex lg:items-center lg:justify-center">
@@ -77,81 +74,61 @@ export default function Timeline() {
 							multiplier={1}
 						/>
 						<TimelineItem
-							date="2nd October 2024"
-							title="Preptember Video 2"
-							content="As we delve further into the preptember series, we go in depth into the tech stacks for frontend development."
+							date="8th October 2024"
+							title="Registrations Open"
+							content="The registrations for Hacktoberfest 2024 will open on the website."
 							icon={<BiSolidParty fontSize={12} />}
 							multiplier={isMobile ? 1 : -1}
 						/>
 						<div></div>
 						<div></div>
 						<TimelineItem
-							date="4th October 2024"
-							title="Preptember Video 3"
-							content="Moving on, we will understand the backend and integration concepts."
+							date="24th October 2024"
+							title="Registrations Close"
+							content="Registrations will be closed."
 							icon={<GoMultiSelect fontSize={12} />}
 							multiplier={1}
 						/>
 						<TimelineItem
-							date="7th October 2024"
-							title="Preptember Video 4"
-							content="In this video, we will dig into app development"
-							icon={<FaLightbulb fontSize={12} />}
-							multiplier={isMobile ? 1 : -1}
-						/>
-						<div></div>
-						<div></div>
-						<TimelineItem
-							date="10th October 2024"
-							title="Preptember Video 5"
-							content="This video covers the fundamentals of Machine Learning, a popular domain in hackathons, and how to effectively apply them to your projects."
-							icon={<FaLightbulb fontSize={12} />}
-							multiplier={1}
-						/>
-						<TimelineItem
-							date="12th October 2024"
-							title="Preptember Video 6"
-							content="In the last video of this series, we explain how to use databases and integrate all the parts of your project."
-							icon={<FaLightbulb fontSize={12} />}
-							multiplier={isMobile ? 1 : -1}
-						/>
-						<div></div>
-						<div></div>
-						<TimelineItem
-							date="8 October 2024"
-							title="Registrations Open"
-							content="The registrations for Hacktoberfest 2024 will open on the website."
-							icon={<FaLock fontSize={12} />}
-							multiplier={1}
-						/>
-						<TimelineItem
-							date="Coming Soon"
-							title="Stay tuned for updates!"
+							date="26th October 2024"
+							title="Day 1 Begins"
 							content={
 								<>
-									Follow COSC on{" "}
-									<a
-										href="https://www.linkedin.com/company/cbitosc/mycompany/"
-										target="_blank"
-										rel="noopener noreferrer"
-										className="text-green hover:text-pink underline"
-									>
-										LinkedIn
-									</a>{" "}
-									and{" "}
-									<a
-										href="https://www.instagram.com/cbitosc/"
-										target="_blank"
-										rel="noopener noreferrer"
-										className="text-green hover:text-pink underline"
-									>
-										Instagram
-									</a>
-									!
+									4:00 PM - Opening Ceremony
+									<br />
+									6:00 PM - Problem Statements Released
+									<br />
+									6:45 PM - Problem Statement Finalization
+									<br />
+									7:15 PM - Coding Begins
+									<br />
+									2:00 AM - Ice-Breaker Session 1
 								</>
 							}
-							icon={<FaLightbulb fontSize={12} />}
+							icon={<BiSolidParty fontSize={12} />}
 							multiplier={isMobile ? 1 : -1}
+						/>
+						<div></div>
+						<div></div>
+						<TimelineItem
+							date="27th October 2024"
+							title="Day 2 & Closing"
+							content={
+								<>
+									9:30 AM - Ice-Breaker Session 2<br />
+									2:00 PM - Submissions Open
+									<br />
+									2:30 PM - Submissions Close
+									<br />
+									3:00 PM - Coding Ends
+									<br />
+									3:30 PM - Presentations
+									<br />
+									8:30 PM - Closing Ceremony
+								</>
+							}
+							icon={<BiSolidParty fontSize={12} />}
+							multiplier={1}
 						/>
 					</ol>
 				</div>

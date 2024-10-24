@@ -12,89 +12,99 @@ import {
 	getDocs,
 } from "firebase/firestore";
 import { motion } from "framer-motion";
-import { User, Code, Users, Edit } from "lucide-react";
+import { User, Code, Users, Edit, FileText } from "lucide-react";
 import "../styles/registration.css";
 import { useRouter } from "next/navigation";
 import { toast } from "react-hot-toast";
-import SuccessPopup from "../registration/successpopup";
+import Link from "next/link";
 
 export default function TeamDetails() {
 	const [user, loading] = useAuthState(auth);
 	const [teamData, setTeamData] = useState(null);
 	const [isLoading, setIsLoading] = useState(true);
-	const [showSuccessPopup, setShowSuccessPopup] = useState(false);
 	const router = useRouter();
 	const [isTeamLeader, setIsTeamLeader] = useState(true);
 
 	useEffect(() => {
 		const fetchTeamData = async () => {
-			if (!user) return;
+			if (!user) {
+				router.push("/login");
+				return;
+			}
 
 			try {
-				const teamDocRef = doc(db, "teams", user.uid);
-				const teamDoc = await getDoc(teamDocRef);
+				// First, try to find the user in participants collection
+				const participantsQuery = query(
+					collection(db, "participants"),
+					where("email", "==", user.email)
+				);
+				const participantSnapshot = await getDocs(participantsQuery);
 
-				if (teamDoc.exists()) {
-					const data = teamDoc.data();
+				if (participantSnapshot.empty) {
+					// Check if user is a team leader directly
+					const teamDoc = await getDoc(doc(db, "teams", user.uid));
+					if (teamDoc.exists()) {
+						const data = teamDoc.data();
+						setTeamData(data);
+						setIsTeamLeader(true);
+					}
 
-					// Check for duplicate participants
-					const participantEmails = data.participants.map(
-						(p) => p.email
-					);
-					const duplicateQuery = query(
-						collection(db, "teams"),
-						where(
-							"participants",
-							"array-contains-any",
-							participantEmails
-						)
-					);
-					const duplicateSnapshot = await getDocs(duplicateQuery);
+					// If we reach here, user is not registered
+					toast.error("Please complete your registration first.");
+					router.push("/register");
+					return;
+				}
 
-					if (duplicateSnapshot.size > 1) {
+				// User found in participants, now find their team
+				const userEmail = user.email;
+				const teamsQuery = query(
+					collection(db, "teams"),
+					where("participants", "array-contains", {
+						email: userEmail,
+					})
+				);
+
+				const teamsSnapshot = await getDocs(teamsQuery);
+
+				if (teamsSnapshot.empty) {
+					// Try alternative query for nested participant objects
+					const allTeamsQuery = query(collection(db, "teams"));
+					const allTeamsSnapshot = await getDocs(allTeamsQuery);
+
+					let userTeam = null;
+					allTeamsSnapshot.forEach((doc) => {
+						const team = doc.data();
+						if (
+							team.participants.some((p) => p.email === userEmail)
+						) {
+							userTeam = { ...team, id: doc.id };
+						}
+					});
+
+					if (!userTeam) {
 						toast.error(
-							"One or more participants are registered in multiple teams. This is not allowed."
+							"Team not found. Please complete registration."
 						);
-						setTeamData(null);
-						router.push("/registration");
+						router.push("/register");
 						return;
 					}
 
-					setTeamData(data);
-
-					// Check if it's the first time viewing team details
-					const hasViewedTeamDetails = localStorage.getItem(
-						"hasViewedTeamDetails"
+					setTeamData(userTeam);
+					setIsTeamLeader(
+						userTeam.participants.find((p) => p.email === userEmail)
+							?.isTeamLeader || false
 					);
-					if (!hasViewedTeamDetails) {
-						setShowSuccessPopup(true);
-						localStorage.setItem("hasViewedTeamDetails", "true");
-					}
+				} else if (teamsSnapshot.size > 1) {
+					toast.error(
+						"User found in multiple teams. Please contact support."
+					);
 				} else {
-					// see if the user has been registered in another team
-					const userDoc = await getDocs(
-						query(
-							collection(db, "participants"),
-							where("email", "==", user.email)
-						)
+					const teamData = teamsSnapshot.docs[0].data();
+					setTeamData(teamData);
+					setIsTeamLeader(
+						teamData.participants.find((p) => p.email === userEmail)
+							?.isTeamLeader || false
 					);
-					if (!userDoc.empty) {
-						console.log("User is not team leader", user, userDoc);
-						toast("You have been registered by your team leader.", {
-							icon: "🙌",
-						});
-						setIsTeamLeader(false);
-						// fetch team data
-						userDoc.forEach(async (participant) => {
-							const teamId = participant.data().teamId;
-							const teamDocRef = doc(db, "teams", teamId);
-							const teamDoc = await getDoc(teamDocRef);
-							setTeamData(teamDoc.data());
-						});
-					} else {
-						toast("Please complete your registration first.");
-						router.push("/registration");
-					}
 				}
 			} catch (error) {
 				console.error("Error fetching team data:", error);
@@ -105,11 +115,7 @@ export default function TeamDetails() {
 		};
 
 		fetchTeamData();
-	}, [user]);
-
-	const handleUpdateClick = () => {
-		router.push("/registration/update");
-	};
+	}, [user, router]);
 
 	if (loading || isLoading) {
 		return (
@@ -123,7 +129,14 @@ export default function TeamDetails() {
 		return (
 			<div className="flex justify-center items-center min-h-screen bg-darkgrey">
 				<div className="text-white text-xl">
-					Please log in to view team details
+					Please{" "}
+					<Link
+						href="/login"
+						className="underline text-green hover:text-lightgreen transition-colors duration-500"
+					>
+						log in
+					</Link>{" "}
+					to view team details
 				</div>
 			</div>
 		);
@@ -141,7 +154,6 @@ export default function TeamDetails() {
 
 	return (
 		<div className="min-h-screen background-gradient bg-darkgrey py-12 px-4 sm:px-6 lg:px-8">
-			{showSuccessPopup && <SuccessPopup />}
 			<div className="max-w-4xl mx-auto">
 				<motion.div
 					initial={{ opacity: 0, y: 20 }}
@@ -149,14 +161,6 @@ export default function TeamDetails() {
 					transition={{ duration: 0.5 }}
 					className="glassomorphism mt-14 backdrop-blur-md rounded-lg shadow p-6 space-y-8"
 				>
-					<a
-						href="https://chat.whatsapp.com/I13Gli1hhE43lx6qiehgSq"
-						target="_blank"
-						rel="noopener noreferrer"
-						className="block w-full mt-6 bg-green text-darkgreen px-4 py-2 rounded-md hover:bg-darkgreen hover:text-green transition-colors duration-200 text-center"
-					>
-						Join the WhatsApp group for important updates
-					</a>
 					<div className="border-b border-green pb-4">
 						<h1 className="text-3xl font-bold text-green flex items-center">
 							<Users className="mr-2" />
@@ -177,51 +181,6 @@ export default function TeamDetails() {
 							)}
 						</p>
 					</div>
-
-					{isTeamLeader ? (
-						teamData.editCount && teamData.editCount >= 3 ? (
-							<p className="text-pink">
-								You have reached the maximum number of updates.
-								If you need to make any changes, please contact{" "}
-								<span className="text-white">
-									Mohammed Imaduddin{" "}
-								</span>
-								<a
-									href="tel:9052812005"
-									className="text-green hover:text-pink transition-colors"
-								>
-									+919052812005
-								</a>
-							</p>
-						) : (
-							<>
-								<button
-									onClick={handleUpdateClick}
-									className="w-full bg-deeppink hover:bg-pink text-white px-4 py-2 rounded-md hover:bg-darkpink transition-colors duration-200 flex items-center justify-center"
-								>
-									<Edit className="mr-2" />
-									Update Team Details
-								</button>
-								<p className="text-pink">
-									(You can update upto{" "}
-									{teamData.editCount
-										? 3 - teamData.editCount
-										: "3"}{" "}
-									more{" "}
-									{teamData.editCount === 2
-										? "time"
-										: "times"}
-									)
-								</p>
-							</>
-						)
-					) : (
-						<p className="text-pink/60">
-							(Only team leader can update the team details. If
-							you need to make any changes, please contact your
-							team leader.)
-						</p>
-					)}
 
 					<div className="space-y-4">
 						<h2 className="text-xl font-semibold text-green flex items-center">

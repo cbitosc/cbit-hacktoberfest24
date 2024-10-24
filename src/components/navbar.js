@@ -17,7 +17,7 @@ const Navbar = () => {
 	const [activeLink, setActiveLink] = useState(null);
 	const simulatedDarkMode = useSimulatedDarkMode();
 	const pathname = usePathname();
-	const { user, logout, isRegistered } = useAuth();
+	const { user, logout } = useAuth();
 
 	useEffect(() => {
 		if (menuOpen) {
@@ -180,11 +180,7 @@ const Navbar = () => {
 					{user ? (
 						<div className="flex gap-2">
 							<Link
-								href={
-									isRegistered
-										? "/teamdetails"
-										: "/registration"
-								}
+								href="/teamdetails"
 								className={cn(
 									"text-sm font-semibold leading-6",
 									"text-darkgreen px-4 py-2 rounded-lg",
@@ -194,9 +190,7 @@ const Navbar = () => {
 									"transition-colors duration-300 ease-in-out"
 								)}
 							>
-								{isRegistered
-									? "Team Details"
-									: "Complete Registration"}
+								Team Details
 							</Link>
 							<button
 								className={cn(
@@ -215,7 +209,7 @@ const Navbar = () => {
 						</div>
 					) : (
 						<Link
-							href="/register"
+							href="/login"
 							className={cn(
 								"text-sm font-semibold leading-6",
 								"text-darkgreen px-4 py-2 rounded-lg",
@@ -225,12 +219,11 @@ const Navbar = () => {
 								"transition-colors duration-300 ease-in-out"
 							)}
 						>
-							Register <span aria-hidden="true">&rarr;</span>
+							Login <span aria-hidden="true">&rarr;</span>
 						</Link>
 					)}
 				</div>
 			</nav>
-			{/* Mobile menu */}
 			<div
 				className={cn("lg:hidden", menuOpen ? "block" : "hidden")}
 				role="dialog"
@@ -329,7 +322,7 @@ const Navbar = () => {
 									</div>
 								) : (
 									<Link
-										href="/register"
+										href="/login"
 										className={cn(
 											"-mx-3 block rounded-lg px-3 py-2.5",
 											"text-base font-semibold leading-7",
@@ -339,7 +332,7 @@ const Navbar = () => {
 										)}
 										onClick={() => setMenuOpen(false)}
 									>
-										Register
+										Login
 										<FaRightLong />
 									</Link>
 								)}
