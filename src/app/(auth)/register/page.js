@@ -23,7 +23,7 @@ const page = () => {
 				</h2>
 
 				<div className="text-4xl font-bold text-green">
-					<span className="text-deeppink">&gt;</span> Registraions are
+					<span className="text-deeppink">&gt;</span> Registrations are
 					<TypingEffect2 text="closed" speed={70} />
 				</div>
 
