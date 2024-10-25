@@ -70,7 +70,7 @@ export default function HeroMod() {
 								<span className="text-lg">Login</span>
 							</Link>
 							<span className="text-md min-w-[50vw] text-center text-white/60">
-								Registraions are now closed.
+								Registrations are now closed.
 							</span>
 							<span className="text-sm inline-block text-center text-beige/50 w-[60vw]">
 								If you have already registered, login to view
