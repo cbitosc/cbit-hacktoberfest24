@@ -76,7 +76,7 @@ export default function Home() {
 					</section>
 
 					<section id="timer">
-						<Timer launchDate="2024-10-26T16:00:00" />
+						<Timer launchDate="2024-10-26T00:18:00" />
 					</section>
 					<div className=" hidden  w-full h-fit overflow-hidden lg:flex flex-col items-end">
 						<svg

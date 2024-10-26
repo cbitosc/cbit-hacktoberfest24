@@ -31,9 +31,12 @@ export default function Timeline() {
 		offset: ["start start", "end end"],
 	});
 
-	const timelineProgress = useTransform(scrollYProgress, [0, 1], [0.1, 0.8], {
-		clamp: true,
-	});
+	const timelineProgress = useTransform(
+		scrollYProgress,
+		[0, 1],
+		[0.1, 0.8],
+		{ clamp: true }
+	);
 
 	const isMobile = width && width <= 1024;
 	return (
@@ -75,7 +78,7 @@ export default function Timeline() {
 						/>
 						<TimelineItem
 							date="8th October 2024"
-							title="Registrations Open"
+							title="Registration Opens"
 							content="The registrations for Hacktoberfest 2024 will open on the website."
 							icon={<BiSolidParty fontSize={12} />}
 							multiplier={isMobile ? 1 : -1}
@@ -84,59 +87,51 @@ export default function Timeline() {
 						<div></div>
 						<TimelineItem
 							date="24th October 2024"
-							title="Registrations Close"
+							title="Registration Closes"
 							content="Registrations will be closed."
 							icon={<GoMultiSelect fontSize={12} />}
 							multiplier={1}
 						/>
 						<TimelineItem
-							date="26th October 2024"
-							title="Day 1 Begins"
-							content={
-								<>
-									4:00 PM - Opening Ceremony
-									<br />
-									6:00 PM - Problem Statements Released
-									<br />
-									6:45 PM - Problem Statement Finalization
-									<br />
-									7:15 PM - Coding Begins
-									<br />
-									2:00 AM - Ice-Breaker Session 1
-								</>
-							}
-							icon={<BiSolidParty fontSize={12} />}
-							multiplier={isMobile ? 1 : -1}
-						/>
-						<div></div>
-						<div></div>
-						<TimelineItem
-							date="27th October 2024"
-							title="Day 2 & Closing"
-							content={
-								<>
-									9:30 AM - Ice-Breaker Session 2<br />
-									2:00 PM - Submissions Open
-									<br />
-									2:30 PM - Submissions Close
-									<br />
-									3:00 PM - Coding Ends
-									<br />
-									3:30 PM - Presentations
-									<br />
-									8:30 PM - Closing Ceremony
-								</>
-							}
-							icon={<BiSolidParty fontSize={12} />}
-							multiplier={1}
-						/>
-					</ol>
-				</div>
-			</div>
-		</div>
-	);
+						    date="26th October 2024"
+                            title="Day 1 Begins"
+                            content={
+                                <>
+                                    4:00 PM - Opening Ceremony<br />
+                                    6:00 PM - Problem Statements Released<br />
+                                    6:45 PM - Problem Statement Finalization<br />
+                                    7:15 PM - Coding Begins<br />
+                                    2:00 AM - Ice-Breaker Session 1
+                                 </>
+                            }
+                            icon={<BiSolidParty fontSize={12} />}
+                            multiplier={isMobile ? 1 : -1}
+                        />
+                        <div></div>
+                        <div></div>
+                        <TimelineItem
+                            date="27th October 2024"
+                            title="Day 2 & Closing"
+                            content={
+                                <>
+                                    9:30 AM - Ice-Breaker Session 2<br />
+                                    2:00 PM - Submissions Open<br />
+									2:30 PM - Submissions Close<br />
+                                    3:00 PM - Coding Ends<br />
+                                    3:30 PM - Presentations<br />
+                                    8:30 PM - Closing Ceremony
+                                </>
+                            }
+                            icon={<BiSolidParty fontSize={12} />}
+                            multiplier={1}
+                        />
+                    </ol>
+                </div>
+            </div>
+        </div>
+    );
 }
-
+						
 function TimelineItem({ date, title, content, link, icon, multiplier = 1 }) {
 	const [width, setWidth] = useState(null);
 
