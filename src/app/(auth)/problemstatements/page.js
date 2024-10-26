@@ -192,7 +192,7 @@ const Prob = () => {
           throw "Your team has already selected this problem";
         }
 
-        if (currentCount >= 3) {
+        if (currentCount >= 7) {
           throw "This problem statement has reached maximum team capacity";
         }
 
@@ -313,7 +313,7 @@ const Prob = () => {
                     </div>
                   )}
                   <div className="text-white">
-                    Teams selected: {problem.count}/3
+                    Teams selected: {problem.count}/7
                   </div>
                 </div>
 
@@ -357,9 +357,9 @@ const Prob = () => {
                   <div className="flex justify-end mt-6">
                     <button
                       onClick={() => openModal(problem)}
-                      disabled={problem.count >= 3 || hasSelectedProblem}
+                      disabled={problem.count >= 7 || hasSelectedProblem}
                       className={`px-6 py-2 rounded-md transition-colors ${
-                        problem.count >= 3 || hasSelectedProblem
+                        problem.count >= 7 || hasSelectedProblem
                           ? "bg-gray-500 text-white cursor-not-allowed"
                           : "bg-green text-darkgreen hover:bg-darkgreen hover:text-green"
                       }`}
@@ -410,16 +410,16 @@ const Prob = () => {
                 </button>
                 <button
                   onClick={() => selectProblemStatement(selectedProblem)}
-                  disabled={selectedProblem.count >= 3 || hasSelectedProblem}
+                  disabled={selectedProblem.count >= 7 || hasSelectedProblem}
                   className={`flex-1 px-4 py-2 rounded-md transition-colors ${
-                    selectedProblem.count >= 3 || hasSelectedProblem
+                    selectedProblem.count >= 7 || hasSelectedProblem
                       ? "bg-gray-500 text-white cursor-not-allowed"
                       : "bg-green text-darkgreen hover:bg-darkgreen hover:text-green"
                   }`}
                 >
                   {hasSelectedProblem 
                     ? "Already Selected" 
-                    : selectedProblem.count >= 3 
+                    : selectedProblem.count >= 7 
                       ? "Maximum Teams Reached" 
                       : "Confirm Selection"}
                 </button>
