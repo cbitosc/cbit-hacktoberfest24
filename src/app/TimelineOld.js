@@ -101,7 +101,7 @@ export default function Timeline() {
                                     6:00 PM - Problem Statements Released<br />
                                     6:45 PM - Problem Statement Finalization<br />
                                     7:15 PM - Coding Begins<br />
-                                    2:00 AM - Ice-Breaker Session 1
+                                    1:00 AM - Ice-Breaker Session 1
                                  </>
                             }
                             icon={<BiSolidParty fontSize={12} />}
